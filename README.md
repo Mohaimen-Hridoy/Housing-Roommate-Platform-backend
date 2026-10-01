@@ -35,7 +35,7 @@ housing-backend/
 ├── prisma/
 │   ├── schema.prisma           # Production schema (PostgreSQL)
 │   ├── schema.test.prisma      # SQLite mirror for tests
-│   └── seed.ts                 # Idempotent seed data
+│   └── seed.js                 # Idempotent seed data
 ├── tests/                      # Integration tests (jest)
 ├── docs/openapi.json           # Generated OpenAPI spec
 ├── scripts/gen-openapi.js      # OpenAPI generator
