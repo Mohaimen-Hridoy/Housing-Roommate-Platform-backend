@@ -2,7 +2,7 @@
 
 Production-quality Node.js + TypeScript + Express backend for a housing & roommate platform, built with **Prisma + PostgreSQL**, **Zod validation**, **JWT bearer auth / RBAC**, **Stripe** payments, soft deletes, audit logging, and a versioned REST API.
 
-> The original workspace also contains an unrelated frontend portfolio (`index.html`, `css/`, `js/`); this backend lives in `housing-backend/` and does **not** touch those files.
+This repository contains the backend service only; no frontend is required for the assignment.
 
 ## Stack
 
@@ -37,9 +37,11 @@ housing-backend/
 │   ├── schema.test.prisma      # SQLite mirror for tests
 │   └── seed.js                 # Idempotent seed data
 ├── tests/                      # Integration tests (jest)
-├── docs/openapi.json           # Generated OpenAPI spec
+├── api/                        # Vercel serverless entrypoints
+├── docs/openapi.json           # OpenAPI spec served by the API
 ├── scripts/gen-openapi.js      # OpenAPI generator
 ├── .env.example
+├── vercel.json
 ├── jest.config.js
 ├── tsconfig.json
 └── package.json
@@ -138,4 +140,4 @@ Auth · Users · Properties · Rooms · Amenities · Bookings · Payments · Str
 - Google OAuth in this implementation exchanges a **Google ID token** obtained client-side (via Google Sign-In) for our JWTs — server-side, using `google-auth-library`. This is production-grade but does not implement the classic server-initiated OAuth *redirect* dance; enable by setting `GOOGLE_OAUTH_ENABLED=true`.
 - Stripe charges require a real `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET`. In the default (mock) mode, approvals instantly mark payments `SUCCEEDED` without calling Stripe, which is what the test suite exercises.
 - The Postgres schema is not migrated in this environment (no PostgreSQL available); tests use SQLite via `prisma/schema.test.prisma`. Run `npx prisma validate` and `npx prisma generate` against the production schema in an environment with PostgreSQL.
-- Not deployed. No git commit performed.
+- Deployment target: Vercel. Configure the production environment variables, deploy the `main` branch, and verify the live health and OpenAPI endpoints before submission.
