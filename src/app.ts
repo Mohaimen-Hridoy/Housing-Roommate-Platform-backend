@@ -49,6 +49,7 @@ export function createApp(): Application {
 }
 
 export const app = createApp();
+export default app;
 
 // Expose rate limiter factories for route-level use where needed.
 export { createRateLimiter, strictRateLimiter };
