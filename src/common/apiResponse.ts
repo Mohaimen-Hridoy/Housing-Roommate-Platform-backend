@@ -19,6 +19,7 @@ export interface ApiResponse<T = unknown> {
   statusCode: number;
   message: string;
   data: T | null;
+  errors?: unknown[];
   meta?: ApiResponseMeta;
   error?: {
     code?: string;
@@ -53,11 +54,14 @@ export function noContentResponse(): ApiResponse<null> {
 }
 
 export function errorResponse(error: { message: string; statusCode: number; code?: string; details?: unknown }): ApiResponse<null> {
+  const errors = Array.isArray(error.details) ? error.details : [];
+
   return {
     success: false,
     statusCode: error.statusCode,
     message: error.message,
     data: null,
+    errors,
     error: { code: error.code, details: error.details },
   };
 }
