@@ -1,0 +1,15 @@
+node_modules/
+dist/
+db/
+.env
+.env.*
+!.env.example
+coverage/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.DS_Store
+docs/openapi.json
+prisma/seed.js

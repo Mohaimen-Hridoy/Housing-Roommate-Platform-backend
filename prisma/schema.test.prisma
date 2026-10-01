@@ -1,0 +1,341 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id               String    @id @default(cuid())
+  email            String    @unique
+  passwordHash     String?
+  name             String?
+  phone            String?   @unique
+  image            String?
+  role             Role      @default(TENANT)
+  isVerified       Boolean   @default(false)
+  refreshTokenHash String?
+  verificationToken        String?
+  verificationTokenExpires DateTime?
+  resetToken               String?
+  resetTokenExpires        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
+
+   properties       Property[]
+   bookings         Booking[]
+   reviews          Review[]
+   favorites        Favorite[]
+   messages         Message[]
+   payments         Payment[]
+   auditLogs        AuditLog[]
+
+  @@index([role])
+  @@map("users")
+}
+
+enum Role {
+  OWNER
+  TENANT
+  ADMIN
+}
+
+enum PropertyStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum RoomStatus {
+  AVAILABLE
+  RESERVED
+  OCCUPIED
+  MAINTENANCE
+}
+
+enum RoomFacing {
+  NORTH
+  SOUTH
+  EAST
+  WEST
+}
+
+enum ListingType {
+  PROPERTY
+  ROOM
+}
+
+enum PaymentProvider {
+  STRIPE
+  MOCK
+}
+
+enum BookingStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+  EXPIRED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+  CANCELED
+}
+
+enum ReviewSubject {
+  ROOM
+  PROPERTY
+}
+
+enum AuditAction {
+  USER_CREATED
+  USER_UPDATED
+  USER_DELETED
+  PROPERTY_CREATED
+  PROPERTY_UPDATED
+  PROPERTY_DELETED
+  ROOM_CREATED
+  ROOM_UPDATED
+  ROOM_DELETED
+  AMENITY_CREATED
+  AMENITY_DELETED
+  BOOKING_CREATED
+  BOOKING_STATUS_CHANGED
+  BOOKING_CANCELLED
+  PAYMENT_CREATED
+  PAYMENT_STATUS_CHANGED
+  REVIEW_CREATED
+  REVIEW_DELETED
+  FAVORITE_CREATED
+  FAVORITE_DELETED
+  MESSAGE_SENT
+  AUTH_LOGIN
+  AUTH_LOGOUT
+  AUTH_TOKEN_REFRESHED
+  ROLE_ASSIGNED
+}
+
+model Property {
+  id          String         @id @default(cuid())
+  ownerId     String
+  owner       User           @relation(fields: [ownerId], references: [id])
+  title       String
+  description String?
+  address     String
+  city        String
+  state       String?
+  postalCode  String?
+  country     String?
+  lat         Float?
+  lng         Float?
+  status      PropertyStatus @default(DRAFT)
+  publishedAt DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  deletedAt   DateTime?
+
+  rooms       Room[]
+  amenities   PropertyAmenity[]
+  bookings    Booking[]
+  favorites   Favorite[]
+  messages    Message[]
+
+  @@index([ownerId])
+  @@index([status])
+  @@index([city])
+  @@index([publishedAt])
+  @@index([title])
+  @@index([title, description])
+  @@map("properties")
+}
+
+model Amenity {
+  id        String             @id @default(cuid())
+  name      String             @unique
+  icon      String?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  properties PropertyAmenity[]
+
+  @@map("amenities")
+}
+
+model PropertyAmenity {
+  id         String   @id @default(cuid())
+  propertyId String
+  amenityId  String
+  property   Property @relation(fields: [propertyId], references: [id])
+  amenity    Amenity  @relation(fields: [amenityId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@unique([propertyId, amenityId])
+  @@index([propertyId])
+  @@index([amenityId])
+  @@map("property_amenities")
+}
+
+model Room {
+  id            String      @id @default(cuid())
+  propertyId    String
+  property      Property    @relation(fields: [propertyId], references: [id])
+  title         String
+  description   String?
+  area          Float?
+  rent          Float
+  currency      String      @default("usd")
+  deposit       Float?
+  bedrooms      Int?
+  bathrooms     Int?
+  facing        RoomFacing?
+  availableFrom DateTime?
+  status        RoomStatus  @default(AVAILABLE)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  deletedAt     DateTime?
+
+  bookings      Booking[]
+
+  @@index([propertyId])
+  @@index([status])
+  @@index([availableFrom])
+  @@index([rent])
+  @@map("rooms")
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  tenantId      String
+  tenant        User          @relation(fields: [tenantId], references: [id])
+  roomId        String
+  room          Room          @relation(fields: [roomId], references: [id])
+  propertyId    String
+  property      Property      @relation(fields: [propertyId], references: [id])
+  status        BookingStatus @default(PENDING)
+  startDate     DateTime
+  endDate       DateTime?
+  nightlyRate   Float
+  currency      String        @default("usd")
+  totalAmount   Float
+  platformFee   Float         @default(0)
+  message       String?
+  reviewedAt    DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  deletedAt     DateTime?
+
+  payments      Payment[]
+  reviews       Review[]
+
+  @@index([tenantId])
+  @@index([roomId])
+  @@index([propertyId])
+  @@index([status])
+  @@index([createdAt(sort: Desc)])
+  @@index([startDate(sort: Asc)])
+  @@map("bookings")
+}
+
+model Payment {
+  id              String           @id @default(cuid())
+  bookingId       String
+  booking         Booking          @relation(fields: [bookingId], references: [id])
+  tenantId        String
+  tenant          User             @relation(fields: [tenantId], references: [id])
+  provider        PaymentProvider  @default(MOCK)
+  providerPaymentId String?
+  amount          Float
+  currency        String           @default("usd")
+  status          PaymentStatus    @default(PENDING)
+  clientSecret    String?
+  metadata        Json?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([bookingId])
+  @@index([tenantId])
+  @@index([provider])
+  @@index([status])
+  @@index([providerPaymentId])
+  @@map("payments")
+}
+
+model Review {
+  id          String       @id @default(cuid())
+  subject     ReviewSubject
+  reviewableId String
+  authorId    String
+  author      User         @relation(fields: [authorId], references: [id])
+  bookingId   String?
+  booking     Booking?     @relation(fields: [bookingId], references: [id])
+  rating      Int          @default(5)
+  comment     String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([subject, reviewableId])
+  @@index([authorId])
+  @@index([rating])
+  @@unique([bookingId, subject, reviewableId, authorId])
+  @@map("reviews")
+}
+
+model Favorite {
+  id         String   @id @default(cuid())
+  userId     String
+  propertyId String
+  user       User     @relation(fields: [userId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, propertyId])
+  @@index([userId])
+  @@map("favorites")
+}
+
+model Message {
+  id          String   @id @default(cuid())
+  senderId    String
+  sender      User     @relation(fields: [senderId], references: [id])
+  recipientId String
+  subject     String?
+  body        String
+  propertyId  String?
+  property    Property? @relation(fields: [propertyId], references: [id])
+  readAt      DateTime?
+  createdAt   DateTime @default(now())
+
+  @@index([senderId])
+  @@index([recipientId])
+  @@index([propertyId])
+  @@map("messages")
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  action      AuditAction
+  actorId     String?
+  actor       User?    @relation(fields: [actorId], references: [id])
+  entityId    String?
+  entityType  String?
+  before      Json?
+  after       Json?
+  ip          String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  @@index([actorId])
+  @@index([entityType, entityId])
+  @@index([action])
+  @@index([createdAt(sort: Desc)])
+  @@map("audit_logs")
+}
