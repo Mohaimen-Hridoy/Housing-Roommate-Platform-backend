@@ -85,6 +85,10 @@ npm run dev                 # tsx watch
 npm run build && npm start
 ```
 
+### Render deployment
+
+The repository includes `render.yaml` for a Render web service. Create a PostgreSQL database, connect the service to it, and set the secret environment variables marked `sync: false` in the Render dashboard before deploying.
+
 ## Tests
 
 Tests run against an ephemeral SQLite DB (mirrors the production schema via `prisma/schema.test.prisma`), so **no PostgreSQL is required** to run them:
