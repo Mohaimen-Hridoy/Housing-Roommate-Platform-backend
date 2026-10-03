@@ -3,6 +3,8 @@ import { prisma } from "../../utils/prisma";
 import { successResponse } from "../../common/apiResponse";
 import { env } from "../../config";
 import { isStripeEnabled } from "../../utils/stripe";
+import { getStorageDriver } from "../../utils/storage";
+import { cacheStatus } from "../../utils/cache";
 
 export const healthRouter = Router();
 
@@ -17,6 +19,8 @@ healthRouter.get("/", async (_req: Request, res: Response, next: NextFunction) =
           db: "connected",
           googleOAuth: env.google.enabled,
           stripe: isStripeEnabled(),
+          storage: getStorageDriver(),
+          cache: cacheStatus(),
           timestamp: new Date().toISOString(),
         },
         { message: "Service is healthy" }
