@@ -139,7 +139,7 @@
   "item": [
     {
       "name": "Demo walkthrough (run in order)",
-      "description": "Uses the seeded live demo accounts and automatically captures tokens and resource IDs. Run requests from top to bottom.",
+      "description": "Uses the current seeded live demo data. Login and booking bodies contain real values; run requests from top to bottom.",
       "item": [
         {
           "name": "1. Login as admin",
@@ -169,7 +169,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}",
+              "raw": "{\n  \"email\": \"admin@housing.local\",\n  \"password\": \"Admin1234!\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -225,7 +225,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"{{ownerEmail}}\",\n  \"password\": \"{{ownerPassword}}\"\n}",
+              "raw": "{\n  \"email\": \"owner@housing.local\",\n  \"password\": \"Owner1234!\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -314,13 +314,13 @@
               ]
             },
             "url": {
-              "raw": "{{baseUrl}}/properties/{{propertyId}}/rooms?page=1&pageSize=1",
+              "raw": "{{baseUrl}}/properties/cmusua27g0004jt047d3sfdpd/rooms?page=1&pageSize=1",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "properties",
-                "{{propertyId}}",
+                "cmusua27g0004jt047d3sfdpd",
                 "rooms?page=1&pageSize=1"
               ]
             }
@@ -367,7 +367,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"{{tenantEmail}}\",\n  \"password\": \"{{tenantPassword}}\"\n}",
+              "raw": "{\n  \"email\": \"tenant@housing.local\",\n  \"password\": \"Tenant1234!\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -426,7 +426,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"roomId\": \"{{roomId}}\",\n  \"startDate\": \"{{bookingStartDate}}\",\n  \"endDate\": \"{{bookingEndDate}}\",\n  \"message\": \"Demo booking created from the Postman walkthrough\"\n}",
+              "raw": "{\n  \"roomId\": \"cmusua2k50007jt0416usoh6s\",\n  \"startDate\": \"2026-11-01\",\n  \"endDate\": \"2026-12-01\",\n  \"message\": \"Demo booking created from the Postman walkthrough\"\n}",
               "options": {
                 "raw": {
                   "language": "json"

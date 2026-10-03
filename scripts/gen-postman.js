@@ -114,31 +114,31 @@ const captureFirstId = (variable) => [
 
 const demoWalkthrough = {
   name: "Demo walkthrough (run in order)",
-  description: "Uses the seeded live demo accounts and automatically captures tokens and resource IDs. Run requests from top to bottom.",
+  description: "Uses the current seeded live demo data. Login and booking bodies contain real values; run requests from top to bottom.",
   item: [
     demoRequest("1. Login as admin", "POST", ["auth", "login"], {
-      body: { email: "{{adminEmail}}", password: "{{adminPassword}}" },
+      body: { email: "admin@housing.local", password: "Admin1234!" },
       test: TOKEN_CAPTURE.concat(["if (pm.response.json()?.data?.accessToken) pm.collectionVariables.set('adminToken', pm.response.json().data.accessToken);"]),
     }),
     demoRequest("2. Login as owner", "POST", ["auth", "login"], {
-      body: { email: "{{ownerEmail}}", password: "{{ownerPassword}}" },
+      body: { email: "owner@housing.local", password: "Owner1234!" },
       test: ["const body = pm.response.json();", "if (body?.data?.accessToken) pm.collectionVariables.set('ownerToken', body.data.accessToken);"],
     }),
     demoRequest("3. Load a live property", "GET", ["properties?page=1&pageSize=1"], {
       auth: "ownerToken",
       test: captureFirstId("propertyId"),
     }),
-    demoRequest("4. Load a live room", "GET", ["properties", "{{propertyId}}", "rooms?page=1&pageSize=1"], {
+    demoRequest("4. Load a live room", "GET", ["properties", "cmusua27g0004jt047d3sfdpd", "rooms?page=1&pageSize=1"], {
       auth: "ownerToken",
       test: captureFirstId("roomId"),
     }),
     demoRequest("5. Login as tenant", "POST", ["auth", "login"], {
-      body: { email: "{{tenantEmail}}", password: "{{tenantPassword}}" },
+      body: { email: "tenant@housing.local", password: "Tenant1234!" },
       test: ["const body = pm.response.json();", "if (body?.data?.accessToken) pm.collectionVariables.set('tenantToken', body.data.accessToken);"],
     }),
     demoRequest("6. Create a booking with live room data", "POST", ["bookings"], {
       auth: "tenantToken",
-      body: { roomId: "{{roomId}}", startDate: "{{bookingStartDate}}", endDate: "{{bookingEndDate}}", message: "Demo booking created from the Postman walkthrough" },
+      body: { roomId: "cmusua2k50007jt0416usoh6s", startDate: "2026-11-01", endDate: "2026-12-01", message: "Demo booking created from the Postman walkthrough" },
       test: ["const body = pm.response.json();", "if (body?.data?.id) pm.collectionVariables.set('bookingId', body.data.id);"],
     }),
     demoRequest("7. View the created booking", "GET", ["bookings", "{{bookingId}}"], {
