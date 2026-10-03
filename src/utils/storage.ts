@@ -39,18 +39,19 @@ export function isCloudinaryConfigured(): boolean {
   return getStorageDriver() === "cloudinary";
 }
 
-function buildPublicId(scope: string, file: Express.Multer.File): string {
-  const ext = path.extname(file.originalname).toLowerCase();
+function buildPublicId(scope: string): string {
   const stamp = new Date().toISOString().slice(0, 10);
   const rand = crypto.randomBytes(6).toString("hex");
-  return `${env.storage.cloudinary.folder}/${scope}/${stamp}-${rand}${ext}`;
+  // No extension: Cloudinary appends the format itself and would produce
+  // "name.png.png" if the public_id already ended in one.
+  return `${scope}/${stamp}-${rand}`;
 }
 
 async function uploadToCloudinary(file: Express.Multer.File, scope: string): Promise<StoredFile> {
   configureCloudinary();
   const result = await new Promise<UploadApiResponse>((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
-      { folder: env.storage.cloudinary.folder, public_id: buildPublicId(scope, file), resource_type: "image" },
+      { folder: env.storage.cloudinary.folder, public_id: buildPublicId(scope), resource_type: "image" },
       (error, uploaded) => {
         if (error || !uploaded) reject(error ?? new Error("Cloudinary returned no upload result"));
         else resolve(uploaded);
