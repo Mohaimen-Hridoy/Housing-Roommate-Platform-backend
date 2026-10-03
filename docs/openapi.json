@@ -10,6 +10,10 @@
   },
   "servers": [
     {
+      "url": "https://housing-roommate-platform-backend.vercel.app/api/v1",
+      "description": "Production (Vercel)"
+    },
+    {
       "url": "http://localhost:4000/api/v1",
       "description": "Local development"
     }
@@ -519,6 +523,122 @@
           },
           "expiresIn": {
             "type": "integer"
+          }
+        }
+      },
+      "Image": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "publicId": {
+            "type": "string"
+          },
+          "storage": {
+            "type": "string",
+            "enum": [
+              "local",
+              "cloudinary"
+            ]
+          },
+          "width": {
+            "type": "integer",
+            "nullable": true
+          },
+          "height": {
+            "type": "integer",
+            "nullable": true
+          },
+          "bytes": {
+            "type": "integer"
+          },
+          "mimeType": {
+            "type": "string",
+            "nullable": true
+          },
+          "position": {
+            "type": "integer"
+          },
+          "isPrimary": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PlatformStats": {
+        "type": "object",
+        "properties": {
+          "window": {
+            "type": "object"
+          },
+          "users": {
+            "type": "object"
+          },
+          "properties": {
+            "type": "object"
+          },
+          "rooms": {
+            "type": "object"
+          },
+          "bookings": {
+            "type": "object"
+          },
+          "payments": {
+            "type": "object"
+          },
+          "engagement": {
+            "type": "object"
+          },
+          "activity": {
+            "type": "object"
+          },
+          "topProperties": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "topCities": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "OwnerDashboard": {
+        "type": "object",
+        "properties": {
+          "window": {
+            "type": "object"
+          },
+          "listings": {
+            "type": "object"
+          },
+          "bookings": {
+            "type": "object"
+          },
+          "earnings": {
+            "type": "object"
+          },
+          "recentBookings": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "topRooms": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
           }
         }
       }
@@ -3185,6 +3305,340 @@
           }
         }
       }
+    },
+    "/properties/{id}/images": {
+      "get": {
+        "summary": "List property images",
+        "tags": [
+          "images"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccess"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Upload property images (owner/admin)",
+        "tags": [
+          "images"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "images"
+                ],
+                "properties": {
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    },
+                    "description": "Image files (jpeg, png, webp, avif)."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Images uploaded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Image"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid file type or size"
+          }
+        }
+      }
+    },
+    "/rooms/{id}/images": {
+      "get": {
+        "summary": "List room images",
+        "tags": [
+          "images"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccess"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Upload room images (owner/admin)",
+        "tags": [
+          "images"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "images"
+                ],
+                "properties": {
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    },
+                    "description": "Image files (jpeg, png, webp, avif)."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Images uploaded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Image"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid file type or size"
+          }
+        }
+      }
+    },
+    "/images/upload-limits": {
+      "get": {
+        "summary": "Get accepted upload types",
+        "tags": [
+          "images"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccess"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/images/{id}/primary": {
+      "patch": {
+        "summary": "Set the primary image",
+        "tags": [
+          "images"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccess"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/images/{id}": {
+      "delete": {
+        "summary": "Delete an image",
+        "tags": [
+          "images"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccess"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/stats": {
+      "get": {
+        "summary": "Platform statistics (admin)",
+        "tags": [
+          "admin"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 365,
+              "default": 30
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlatformStats"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dashboard": {
+      "get": {
+        "summary": "Owner dashboard summary",
+        "tags": [
+          "admin"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnerDashboard"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -3231,6 +3685,14 @@
     {
       "name": "messages",
       "description": "Messaging"
+    },
+    {
+      "name": "images",
+      "description": "Property & room image uploads"
+    },
+    {
+      "name": "admin",
+      "description": "Administration & statistics"
     },
     {
       "name": "audit",

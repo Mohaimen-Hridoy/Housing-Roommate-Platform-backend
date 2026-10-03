@@ -11,6 +11,25 @@ function operation(summary, tag, opts = {}) {
   if (opts.params) op.parameters = opts.params;
   if (opts.pathParams) op.parameters = [...(opts.params || []), ...opts.pathParams];
   if (opts.body) op.requestBody = { content: { "application/json": { schema: opts.body } } };
+  if (opts.formBody) {
+    op.requestBody = {
+      content: {
+        "multipart/form-data": {
+          schema: {
+            type: "object",
+            required: ["images"],
+            properties: {
+              images: {
+                type: "array",
+                items: { type: "string", format: "binary" },
+                description: "Image files (jpeg, png, webp, avif).",
+              },
+            },
+          },
+        },
+      },
+    };
+  }
   op.responses = opts.responses || { 200: { description: "OK", content: { "application/json": { schema: { $ref: "#/components/schemas/ApiSuccess" } } } } };
   if (opts.created) op.responses[201] = { description: "Created" };
   return op;
@@ -87,6 +106,15 @@ const paths = [
   ["get", "/health", operation("Health check", "health")],
   ["get", "/health/live", operation("Liveness probe", "health")],
   ["get", "/health/ready", operation("Readiness probe", "health")],
+  ["get", "/properties/{id}/images", operation("List property images", "images", { security: false, pathParams: [{ name: "id", in: "path", required: true, schema: { type: "string" } }] })],
+  ["post", "/properties/{id}/images", operation("Upload property images (owner/admin)", "images", { formBody: true, pathParams: [{ name: "id", in: "path", required: true, schema: { type: "string" } }], responses: { 201: { description: "Images uploaded", content: { "application/json": { schema: { type: "array", items: { $ref: "#/components/schemas/Image" } } } } }, 422: { description: "Invalid file type or size" } } })],
+  ["get", "/rooms/{id}/images", operation("List room images", "images", { security: false, pathParams: [{ name: "id", in: "path", required: true, schema: { type: "string" } }] })],
+  ["post", "/rooms/{id}/images", operation("Upload room images (owner/admin)", "images", { formBody: true, pathParams: [{ name: "id", in: "path", required: true, schema: { type: "string" } }], responses: { 201: { description: "Images uploaded", content: { "application/json": { schema: { type: "array", items: { $ref: "#/components/schemas/Image" } } } } }, 422: { description: "Invalid file type or size" } } })],
+  ["get", "/images/upload-limits", operation("Get accepted upload types", "images", { security: false })],
+  ["patch", "/images/{id}/primary", operation("Set the primary image", "images", { pathParams: [{ name: "id", in: "path", required: true, schema: { type: "string" } }] })],
+  ["delete", "/images/{id}", operation("Delete an image", "images", { pathParams: [{ name: "id", in: "path", required: true, schema: { type: "string" } }] })],
+  ["get", "/admin/stats", operation("Platform statistics (admin)", "admin", { params: [{ name: "days", in: "query", schema: { type: "integer", minimum: 1, maximum: 365, default: 30 } }], responses: { 200: { description: "OK", content: { "application/json": { schema: { $ref: "#/components/schemas/PlatformStats" } } } } } })],
+  ["get", "/dashboard", operation("Owner dashboard summary", "admin", { responses: { 200: { description: "OK", content: { "application/json": { schema: { $ref: "#/components/schemas/OwnerDashboard" } } } } } })],
 ];
 
 const pathMap = {};
@@ -103,7 +131,10 @@ const spec = {
     description: "Versioned backend API for the Housing & Roommate Platform (Node.js + TypeScript + Express + Prisma + Stripe).",
     contact: { name: "housing-backend" },
   },
-  servers: [{ url: "http://localhost:4000/api/v1", description: "Local development" }],
+  servers: [
+    { url: "https://housing-roommate-platform-backend.vercel.app/api/v1", description: "Production (Vercel)" },
+    { url: "http://localhost:4000/api/v1", description: "Local development" },
+  ],
   components: {
     securitySchemes: { bearerAuth: { type: "http", scheme: "bearer", bearerFormat: "JWT" } },
     schemas: {
@@ -121,6 +152,9 @@ const spec = {
       Message: { type: "object", properties: { id: { type: "string" }, senderId: { type: "string" }, recipientId: { type: "string" }, subject: { type: "string", nullable: true }, body: { type: "string" }, propertyId: { type: "string", nullable: true }, readAt: { type: "string", format: "date-time", nullable: true }, createdAt: { type: "string", format: "date-time" } } },
       AuditLog: { type: "object", properties: { id: { type: "string" }, action: { type: "string" }, actorId: { type: "string", nullable: true }, entityId: { type: "string", nullable: true }, entityType: { type: "string", nullable: true }, before: {}, after: {}, ip: { type: "string", nullable: true }, userAgent: { type: "string", nullable: true }, createdAt: { type: "string", format: "date-time" } } },
       TokenResponse: { type: "object", properties: { accessToken: { type: "string" }, refreshToken: { type: "string" }, tokenType: { type: "string", example: "Bearer" }, expiresIn: { type: "integer" } } },
+      Image: { type: "object", properties: { id: { type: "string" }, url: { type: "string" }, publicId: { type: "string" }, storage: { type: "string", enum: ["local", "cloudinary"] }, width: { type: "integer", nullable: true }, height: { type: "integer", nullable: true }, bytes: { type: "integer" }, mimeType: { type: "string", nullable: true }, position: { type: "integer" }, isPrimary: { type: "boolean" }, createdAt: { type: "string", format: "date-time" } } },
+      PlatformStats: { type: "object", properties: { window: { type: "object" }, users: { type: "object" }, properties: { type: "object" }, rooms: { type: "object" }, bookings: { type: "object" }, payments: { type: "object" }, engagement: { type: "object" }, activity: { type: "object" }, topProperties: { type: "array", items: { type: "object" } }, topCities: { type: "array", items: { type: "object" } } } },
+      OwnerDashboard: { type: "object", properties: { window: { type: "object" }, listings: { type: "object" }, bookings: { type: "object" }, earnings: { type: "object" }, recentBookings: { type: "array", items: { type: "object" } }, topRooms: { type: "array", items: { type: "object" } } } },
     },
   },
   paths: pathMap,
@@ -136,6 +170,8 @@ const spec = {
     { name: "reviews", description: "Reviews" },
     { name: "favorites", description: "Favorites" },
     { name: "messages", description: "Messaging" },
+    { name: "images", description: "Property & room image uploads" },
+    { name: "admin", description: "Administration & statistics" },
     { name: "audit", description: "Audit trail" },
     { name: "health", description: "Health probes" },
   ],
