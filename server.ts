@@ -1,5 +1,3 @@
-import { app } from "./src/app";
+import app from "./src/app";
 
-const port = Number(process.env.PORT ?? 3000);
-
-app.listen(port);
+export default app;
