@@ -25,6 +25,20 @@ const evictsOldest = (): void => {
 function getClient(): Redis | null {
   if (backend !== "redis") return null;
   if (client) return client;
+  if (!env.cache.redisUrl) {
+    backend = "memory";
+    return null;
+  }
+  try {
+    const protocol = new URL(env.cache.redisUrl).protocol;
+    if (protocol !== "redis:" && protocol !== "rediss:") {
+      backend = "memory";
+      return null;
+    }
+  } catch {
+    backend = "memory";
+    return null;
+  }
   if (connecting || !env.cache.redisUrl) return null;
 
   connecting = true;

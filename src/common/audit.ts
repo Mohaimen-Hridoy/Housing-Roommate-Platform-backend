@@ -18,14 +18,21 @@ export interface AuditOptions {
 export async function writeAuditLog(data: AuditOptions): Promise<void> {
   try {
     const actorId = data.actor?.id ?? null;
+    const jsonValue = (value: unknown): Prisma.InputJsonValue | undefined => {
+      if (value === undefined) return undefined;
+      return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
+    };
+
+    const before = jsonValue(data.before);
+    const after = jsonValue(data.after);
     await prisma.auditLog.create({
       data: {
         action: data.action as never,
         actorId,
         entityId: data.entityId?.toString() ?? null,
         entityType: data.entityType ?? null,
-        before: data.before as Prisma.InputJsonValue,
-        after: data.after as Prisma.InputJsonValue,
+        ...(before === undefined ? {} : { before }),
+        ...(after === undefined ? {} : { after }),
         ip: data.ip ?? null,
         userAgent: data.userAgent ?? null,
       },

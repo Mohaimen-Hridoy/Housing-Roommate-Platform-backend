@@ -4,6 +4,7 @@ import { prisma } from "../../utils/prisma";
 import { PaymentStatus, PaymentProvider } from "@prisma/client";
 import { logger } from "../../utils/logger";
 import { BadRequestError } from "../../common/errors";
+import { successResponse } from "../../common/apiResponse";
 
 export interface StripeWebhookRequest extends Request {
   body: Buffer;
@@ -56,7 +57,7 @@ export const stripeWebhook = async (req: StripeWebhookRequest, res: Response, ne
         break;
     }
 
-    res.json({ received: true });
+    res.json(successResponse({ received: true }, { message: "Webhook received" }));
   } catch (err) {
     next(err);
   }
