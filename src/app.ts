@@ -27,6 +27,9 @@ export function createApp(): Application {
   app.use(express.json({ limit: "10mb" }));
   app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
+  // Locally stored uploads (the Cloudinary driver serves files from its CDN).
+  app.use(env.storage.urlPrefix, express.static(env.storage.uploadDir, { maxAge: "7d", fallthrough: true }));
+
   // Health + docs
   app.get("/", (_req: Request, res: Response) => {
     res.json({ name: "housing-backend", version: "1.0.0", status: "running" });
