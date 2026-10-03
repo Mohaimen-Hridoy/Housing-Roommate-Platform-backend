@@ -8,8 +8,10 @@ import { listPayments, getPayment, refundPayment } from "./payments.controller";
 
 export const paymentsRouter = Router();
 
-paymentsRouter.use(authenticate, authorize(Role.OWNER, Role.TENANT, Role.ADMIN));
+paymentsRouter.use(authenticate);
 
-paymentsRouter.get("/", authorize(Role.ADMIN, Role.OWNER, Role.TENANT), validate({ query: paymentFilterSchema }), listPayments);
+// Listing every payment is an administrative view; tenants and owners read
+// their own payments through GET /payments/:id and GET /bookings/:id/payments.
+paymentsRouter.get("/", authorize(Role.ADMIN), validate({ query: paymentFilterSchema }), listPayments);
 paymentsRouter.get("/:id", getPayment);
 paymentsRouter.post("/:id/refund", authorize(Role.ADMIN), validate({ body: refundSchema }), refundPayment);
