@@ -19,6 +19,7 @@ export async function seed(): Promise<void> {
   const tenant = await upsertUser({ email: "tenant@housing.local", name: "Tenant User", role: Role.TENANT, password: "Tenant1234!" });
   await upsertUser({ email: "admin@housing.local", name: "Admin User", role: Role.ADMIN, password: "Admin1234!" });
 
+  await prisma.propertyAmenity.deleteMany({});
   await prisma.amenity.deleteMany({});
   await prisma.amenity.createMany({
     data: [
@@ -47,8 +48,12 @@ export async function seed(): Promise<void> {
       country: "US",
       status: PropertyStatus.PUBLISHED,
       publishedAt: new Date(),
-      amenities: { connect: amenities.map((a) => ({ id: a.id })) },
     },
+  });
+
+  await prisma.propertyAmenity.deleteMany({ where: { propertyId: property.id } });
+  await prisma.propertyAmenity.createMany({
+    data: amenities.map((a) => ({ propertyId: property.id, amenityId: a.id })),
   });
 
   await prisma.room.upsert({
@@ -113,10 +118,16 @@ export async function seed(): Promise<void> {
     }
   }
 
-  await prisma.favorite.create({ data: { userId: tenant.id, propertyId: "seed-property-1" } });
+  await prisma.favorite.upsert({
+    where: { userId_propertyId: { userId: tenant.id, propertyId: "seed-property-1" } },
+    update: {},
+    create: { userId: tenant.id, propertyId: "seed-property-1" },
+  });
 
-  await prisma.review.create({
-    data: {
+  await prisma.review.upsert({
+    where: { bookingId_subject_reviewableId_authorId: { bookingId: "seed-booking-1", subject: "ROOM", reviewableId: "seed-room-1", authorId: tenant.id } },
+    update: { rating: 5, comment: "Great place!" },
+    create: {
       subject: "ROOM",
       reviewableId: "seed-room-1",
       author: { connect: { id: tenant.id } },
