@@ -31,7 +31,7 @@ const toCurlExample = (schema) => {
 const buildRequest = (method, rawPath, op) => {
   const segments = rawPath.split("/").filter(Boolean);
   const pathSegments = segments.map((segment) =>
-    segment.startsWith("{") && segment.endsWith("}") ? `:${segment.slice(1, -1)}` : segment
+    segment.startsWith("{") && segment.endsWith("}") ? `{{${segment.slice(1, -1)}}}` : segment
   );
 
   const query = (op.parameters || []).filter((p) => p.in === "query");
@@ -90,6 +90,63 @@ const CREATES = new Map([
   ["/bookings", "bookingId"],
 ]);
 
+const demoRequest = (name, method, pathSegments, options = {}) => ({
+  name,
+  request: {
+    method,
+    header: [{ key: "Accept", value: "application/json", type: "text" }, ...(options.body ? [{ key: "Content-Type", value: "application/json", type: "text" }] : [])],
+    ...(options.auth ? { auth: { type: "bearer", bearer: [{ key: "token", value: `{{${options.auth}}}`, type: "string" }] } } : {}),
+    url: {
+      raw: [BASE_URL, ...pathSegments].join("/"),
+      host: [BASE_URL],
+      path: pathSegments,
+    },
+    ...(options.body ? { body: { mode: "raw", raw: JSON.stringify(options.body, null, 2), options: { raw: { language: "json" } } } } : {}),
+  },
+  response: [],
+  ...(options.test ? { event: [{ listen: "test", script: { type: "text/javascript", exec: options.test } }] } : {}),
+});
+
+const captureFirstId = (variable) => [
+  "const body = pm.response.json();",
+  `if (body?.data?.[0]?.id) pm.collectionVariables.set('${variable}', body.data[0].id);`,
+];
+
+const demoWalkthrough = {
+  name: "Demo walkthrough (run in order)",
+  description: "Uses the seeded live demo accounts and automatically captures tokens and resource IDs. Run requests from top to bottom.",
+  item: [
+    demoRequest("1. Login as admin", "POST", ["auth", "login"], {
+      body: { email: "{{adminEmail}}", password: "{{adminPassword}}" },
+      test: TOKEN_CAPTURE.concat(["if (pm.response.json()?.data?.accessToken) pm.collectionVariables.set('adminToken', pm.response.json().data.accessToken);"]),
+    }),
+    demoRequest("2. Login as owner", "POST", ["auth", "login"], {
+      body: { email: "{{ownerEmail}}", password: "{{ownerPassword}}" },
+      test: ["const body = pm.response.json();", "if (body?.data?.accessToken) pm.collectionVariables.set('ownerToken', body.data.accessToken);"],
+    }),
+    demoRequest("3. Load a live property", "GET", ["properties?page=1&pageSize=1"], {
+      auth: "ownerToken",
+      test: captureFirstId("propertyId"),
+    }),
+    demoRequest("4. Load a live room", "GET", ["properties", "{{propertyId}}", "rooms?page=1&pageSize=1"], {
+      auth: "ownerToken",
+      test: captureFirstId("roomId"),
+    }),
+    demoRequest("5. Login as tenant", "POST", ["auth", "login"], {
+      body: { email: "{{tenantEmail}}", password: "{{tenantPassword}}" },
+      test: ["const body = pm.response.json();", "if (body?.data?.accessToken) pm.collectionVariables.set('tenantToken', body.data.accessToken);"],
+    }),
+    demoRequest("6. Create a booking with live room data", "POST", ["bookings"], {
+      auth: "tenantToken",
+      body: { roomId: "{{roomId}}", startDate: "{{bookingStartDate}}", endDate: "{{bookingEndDate}}", message: "Demo booking created from the Postman walkthrough" },
+      test: ["const body = pm.response.json();", "if (body?.data?.id) pm.collectionVariables.set('bookingId', body.data.id);"],
+    }),
+    demoRequest("7. View the created booking", "GET", ["bookings", "{{bookingId}}"], {
+      auth: "tenantToken",
+    }),
+  ],
+};
+
 const groups = new Map();
 for (const [rawPath, pathItem] of Object.entries(spec.paths)) {
   for (const method of METHODS) {
@@ -132,7 +189,7 @@ const collection = {
     name: spec.info.title,
     description:
       `${spec.info.description}\n\nGenerated from docs/openapi.json (OpenAPI ${spec.openapi}).\n` +
-      `Set the "baseUrl" variable to the server root, e.g. http://localhost:4000/api/v1.\n` +
+      `The collection defaults to the deployed API. Change the "baseUrl" variable for local testing.\n` +
       `Demo admin: admin@housing.local / Admin1234!\n\n` +
       `Auth flows capture tokens automatically: the Auth folder scripts store accessToken and refreshToken\n` +
       `in the collection variables, so protected requests work without manual copying.`,
@@ -146,15 +203,30 @@ const collection = {
         type: "text/javascript",
         exec: [
           "if (!pm.collectionVariables.get('baseUrl')) {",
-          "  pm.collectionVariables.set('baseUrl', 'http://localhost:4000/api/v1');",
+          "  pm.collectionVariables.set('baseUrl', 'https://housing-roommate-platform-backend.vercel.app/api/v1');",
           "}",
+        ],
+      },
+    },
+    {
+      listen: "prerequest",
+      script: {
+        type: "text/javascript",
+        exec: [
+          "const start = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);",
+          "const end = new Date(Date.now() + 37 * 24 * 60 * 60 * 1000);",
+          "pm.collectionVariables.set('bookingStartDate', start.toISOString().slice(0, 10));",
+          "pm.collectionVariables.set('bookingEndDate', end.toISOString().slice(0, 10));",
         ],
       },
     },
   ],
   variable: [
-    { key: "baseUrl", value: "http://localhost:4000/api/v1", type: "string" },
+    { key: "baseUrl", value: "https://housing-roommate-platform-backend.vercel.app/api/v1", type: "string" },
     { key: "accessToken", value: "", type: "string" },
+    { key: "adminToken", value: "", type: "string" },
+    { key: "ownerToken", value: "", type: "string" },
+    { key: "tenantToken", value: "", type: "string" },
     { key: "refreshToken", value: "", type: "string" },
     { key: "adminEmail", value: "admin@housing.local", type: "string" },
     { key: "adminPassword", value: "Admin1234!", type: "string" },
@@ -167,12 +239,14 @@ const collection = {
     { key: "roomId", value: "", type: "string" },
     { key: "bookingId", value: "", type: "string" },
     { key: "paymentId", value: "", type: "string" },
+    { key: "bookingStartDate", value: "", type: "string" },
+    { key: "bookingEndDate", value: "", type: "string" },
   ],
-  item: [...groups.entries()].map(([tag, items]) => ({
+  item: [demoWalkthrough, ...[...groups.entries()].map(([tag, items]) => ({
     name: tag,
     description: tagDescriptions[tag] || "",
     item: items,
-  })),
+  }))],
 };
 
 const outDir = path.resolve(__dirname, "..", "docs");
