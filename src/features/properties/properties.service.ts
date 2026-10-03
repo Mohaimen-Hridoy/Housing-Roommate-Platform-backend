@@ -24,6 +24,18 @@ const propertySelect = {
   updatedAt: true,
 };
 
+const imageSelect = {
+  id: true,
+  url: true,
+  publicId: true,
+  storage: true,
+  width: true,
+  height: true,
+  bytes: true,
+  position: true,
+  isPrimary: true,
+} as const;
+
 export interface ListPropertiesInput {
   status?: PropertyStatus;
   city?: string;
@@ -90,7 +102,24 @@ export async function listProperties(input: ListPropertiesInput & { includeDelet
 export async function getProperty(id: string) {
   const property = await prisma.property.findFirst({
     where: { id, deletedAt: null },
-    select: { ...propertySelect, amenities: { select: { amenity: { select: { id: true, name: true, icon: true } } } }, rooms: { where: { deletedAt: null, status: "AVAILABLE" }, select: { id: true, title: true, rent: true, currency: true, area: true, bedrooms: true, bathrooms: true } } },
+    select: {
+      ...propertySelect,
+      amenities: { select: { amenity: { select: { id: true, name: true, icon: true } } } },
+      rooms: {
+        where: { deletedAt: null, status: "AVAILABLE" },
+        select: {
+          id: true,
+          title: true,
+          rent: true,
+          currency: true,
+          area: true,
+          bedrooms: true,
+          bathrooms: true,
+          images: { select: imageSelect, orderBy: [{ isPrimary: "desc" }, { position: "asc" }] },
+        },
+      },
+      images: { select: imageSelect, orderBy: [{ isPrimary: "desc" }, { position: "asc" }] },
+    },
   });
   if (!property) throw new NotFoundError("Property not found");
   return { ...property, amenities: property.amenities.map((a: { amenity: unknown }) => a.amenity) };

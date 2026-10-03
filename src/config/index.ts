@@ -45,6 +45,21 @@ const envSchema = z
     SMTP_PASS: z.string().optional(),
     EMAIL_FROM: z.string().default("noreply@housing.local"),
     LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]).default("info"),
+    STORAGE_DRIVER: z.enum(["auto", "cloudinary", "local"]).default("auto"),
+    CLOUDINARY_CLOUD_NAME: z.string().optional(),
+    CLOUDINARY_API_KEY: z.string().optional(),
+    CLOUDINARY_API_SECRET: z.string().optional(),
+    CLOUDINARY_FOLDER: z.string().default("housing"),
+    UPLOAD_DIR: z.string().default("uploads"),
+    UPLOAD_URL_PREFIX: z.string().default("/uploads"),
+    UPLOAD_MAX_FILES: z.coerce.number().default(6),
+    UPLOAD_MAX_FILE_SIZE_MB: z.coerce.number().default(5),
+    UPLOAD_ALLOWED_MIME: z
+      .string()
+      .default("image/jpeg,image/png,image/webp,image/avif"),
+    REDIS_URL: z.string().optional(),
+    CACHE_ENABLED: z.preprocess((v) => parseBool(v as string, true), z.boolean()),
+    CACHE_TTL_SECONDS: z.coerce.number().default(60),
   })
   .passthrough();
 
@@ -106,6 +121,30 @@ export const env = {
     user: c.SMTP_USER,
     pass: c.SMTP_PASS,
     from: c.EMAIL_FROM,
+  },
+  storage: {
+    driver:
+      c.STORAGE_DRIVER === "auto"
+        ? c.CLOUDINARY_CLOUD_NAME && c.CLOUDINARY_API_KEY && c.CLOUDINARY_API_SECRET
+          ? "cloudinary"
+          : "local"
+        : c.STORAGE_DRIVER,
+    cloudinary: {
+      cloudName: c.CLOUDINARY_CLOUD_NAME ?? "",
+      apiKey: c.CLOUDINARY_API_KEY ?? "",
+      apiSecret: c.CLOUDINARY_API_SECRET ?? "",
+      folder: c.CLOUDINARY_FOLDER,
+    },
+    uploadDir: c.UPLOAD_DIR,
+    urlPrefix: c.UPLOAD_URL_PREFIX,
+    maxFiles: c.UPLOAD_MAX_FILES,
+    maxFileSizeBytes: c.UPLOAD_MAX_FILE_SIZE_MB * 1024 * 1024,
+    allowedMime: c.UPLOAD_ALLOWED_MIME.split(",").map((m) => m.trim().toLowerCase()).filter(Boolean),
+  },
+  cache: {
+    enabled: c.CACHE_ENABLED && !!c.REDIS_URL,
+    redisUrl: c.REDIS_URL ?? "",
+    ttlSeconds: c.CACHE_TTL_SECONDS,
   },
   logLevel: c.LOG_LEVEL,
 } as const;

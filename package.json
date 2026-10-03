@@ -14,7 +14,7 @@
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/index.js",
     "lint": "eslint \"src/**/*.ts\" \"tests/**/*.ts\" \"eslint.config.js\" \"jest.config.js\" \"scripts/**/*.js\"",
-    "lint:fix": "eslint . --ext .ts --fix",
+    "lint:fix": "eslint \"src/**/*.ts\" \"tests/**/*.ts\" --fix",
     "typecheck": "tsc --noEmit",
     "test": "jest --runInBand",
     "test:watch": "jest --watch --runInBand",
@@ -22,10 +22,14 @@
     "prisma:generate": "prisma generate",
     "prisma:studio": "prisma studio",
     "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
+    "db:status": "prisma migrate status",
     "db:reset": "prisma migrate reset --force --skip-generate --skip-seed && prisma db seed",
-    "open:gen": "node scripts/gen-openapi.js"
+    "open:gen": "node scripts/gen-openapi.js",
+    "open:postman": "node scripts/gen-postman.js",
+    "docs:gen": "npm run open:gen && npm run open:postman"
   },
   "keywords": [
     "housing",
@@ -38,6 +42,7 @@
   "dependencies": {
     "@prisma/client": "^6.7.0",
     "bcryptjs": "^2.4.1",
+    "cloudinary": "^2.11.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.2",
@@ -45,7 +50,9 @@
     "google-auth-library": "^9.15.0",
     "helmet": "^8.0.0",
     "http-status": "^1.7.4",
+    "ioredis": "^5.11.1",
     "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.2",
     "nodemailer": "^6.9.14",
     "stripe": "^13.8.0",
     "zod": "^3.23.8"
@@ -56,6 +63,7 @@
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.13",
     "@types/jsonwebtoken": "^9.0.6",
+    "@types/multer": "^1.4.13",
     "@types/node": "^22.5.0",
     "@types/nodemailer": "^8.0.2",
     "@types/supertest": "^7.2.1",

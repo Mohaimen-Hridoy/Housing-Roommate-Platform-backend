@@ -18,10 +18,25 @@ process.env.SMTP_HOST = "";
 
 process.env.CORS_ORIGINS = "*";
 process.env.API_BASE_URL = "/api/v1";
+process.env.UPLOAD_DIR = path.resolve(process.cwd(), "db/test-uploads");
 
 async function resetDatabase() {
   const delegates = prisma as unknown as Record<string, { deleteMany(args?: unknown): Promise<unknown> }>;
-  const models = ["auditLog", "review", "favorite", "payment", "booking", "room", "propertyAmenity", "property", "amenity", "message", "user"];
+  const models = [
+    "auditLog",
+    "review",
+    "favorite",
+    "payment",
+    "roomImage",
+    "propertyImage",
+    "booking",
+    "room",
+    "propertyAmenity",
+    "property",
+    "amenity",
+    "message",
+    "user",
+  ];
   for (const model of models) {
     await delegates[model]?.deleteMany({});
   }

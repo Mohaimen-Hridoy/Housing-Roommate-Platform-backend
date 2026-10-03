@@ -56,6 +56,38 @@ export async function seed(): Promise<void> {
     data: amenities.map((a) => ({ propertyId: property.id, amenityId: a.id })),
   });
 
+  // Demo imagery uses externally hosted placeholders so a fresh clone has
+  // visible photos without shipping binary assets.
+  await prisma.propertyImage.deleteMany({ where: { propertyId: property.id } });
+  await prisma.propertyImage.createMany({
+    data: [
+      {
+        propertyId: property.id,
+        url: "https://picsum.photos/seed/loft-living/1200/800",
+        publicId: "seed/property-1-living",
+        storage: "external",
+        width: 1200,
+        height: 800,
+        bytes: 0,
+        mimeType: "image/jpeg",
+        position: 0,
+        isPrimary: true,
+      },
+      {
+        propertyId: property.id,
+        url: "https://picsum.photos/seed/loft-kitchen/1200/800",
+        publicId: "seed/property-1-kitchen",
+        storage: "external",
+        width: 1200,
+        height: 800,
+        bytes: 0,
+        mimeType: "image/jpeg",
+        position: 1,
+        isPrimary: false,
+      },
+    ],
+  });
+
   await prisma.room.upsert({
     where: { id: "seed-room-1" },
     update: { rent: 1200, status: RoomStatus.AVAILABLE },
@@ -77,6 +109,23 @@ export async function seed(): Promise<void> {
   });
 
   const roomId = "seed-room-1";
+  await prisma.roomImage.deleteMany({ where: { roomId } });
+  await prisma.roomImage.createMany({
+    data: [
+      {
+        roomId,
+        url: "https://picsum.photos/seed/cozy-bedroom/1200/800",
+        publicId: "seed/room-1-bedroom",
+        storage: "external",
+        width: 1200,
+        height: 800,
+        bytes: 0,
+        mimeType: "image/jpeg",
+        position: 0,
+        isPrimary: true,
+      },
+    ],
+  });
   const room = await prisma.room.findUnique({ where: { id: roomId }, select: { rent: true, currency: true, id: true, property: { select: { id: true } } } });
   if (room) {
     const nights = 30;

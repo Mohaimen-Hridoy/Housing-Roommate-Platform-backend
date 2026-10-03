@@ -5,33 +5,38 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+  // Written to its own directory so generating the SQLite test client never
+  // overwrites the PostgreSQL client used by dev, build and seed. Sharing the
+  // default output also fails on Windows, where the loaded query engine DLL
+  // cannot be replaced while a test process still holds it open.
+  output   = "../node_modules/.prisma/test-client"
 }
 
 model User {
-  id               String    @id @default(cuid())
-  email            String    @unique
-  passwordHash     String?
-  name             String?
-  phone            String?   @unique
-  image            String?
-  role             Role      @default(TENANT)
-  isVerified       Boolean   @default(false)
-  refreshTokenHash String?
+  id                       String    @id @default(cuid())
+  email                    String    @unique
+  passwordHash             String?
+  name                     String?
+  phone                    String?   @unique
+  image                    String?
+  role                     Role      @default(TENANT)
+  isVerified               Boolean   @default(false)
+  refreshTokenHash         String?
   verificationToken        String?
   verificationTokenExpires DateTime?
   resetToken               String?
   resetTokenExpires        DateTime?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  deletedAt        DateTime?
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+  deletedAt                DateTime?
 
-   properties       Property[]
-   bookings         Booking[]
-   reviews          Review[]
-   favorites        Favorite[]
-   messages         Message[]
-   payments         Payment[]
-   auditLogs        AuditLog[]
+  properties Property[]
+  bookings   Booking[]
+  reviews    Review[]
+  favorites  Favorite[]
+  messages   Message[]
+  payments   Payment[]
+  auditLogs  AuditLog[]
 
   @@index([role])
   @@map("users")
@@ -61,11 +66,6 @@ enum RoomFacing {
   SOUTH
   EAST
   WEST
-}
-
-enum ListingType {
-  PROPERTY
-  ROOM
 }
 
 enum PaymentProvider {
@@ -108,6 +108,8 @@ enum AuditAction {
   ROOM_DELETED
   AMENITY_CREATED
   AMENITY_DELETED
+  IMAGE_UPLOADED
+  IMAGE_DELETED
   BOOKING_CREATED
   BOOKING_STATUS_CHANGED
   BOOKING_CANCELLED
@@ -143,11 +145,12 @@ model Property {
   updatedAt   DateTime       @updatedAt
   deletedAt   DateTime?
 
-  rooms       Room[]
-  amenities   PropertyAmenity[]
-  bookings    Booking[]
-  favorites   Favorite[]
-  messages    Message[]
+  rooms     Room[]
+  amenities PropertyAmenity[]
+  bookings  Booking[]
+  favorites Favorite[]
+  messages  Message[]
+  images    PropertyImage[]
 
   @@index([ownerId])
   @@index([status])
@@ -159,11 +162,11 @@ model Property {
 }
 
 model Amenity {
-  id        String             @id @default(cuid())
-  name      String             @unique
+  id        String   @id @default(cuid())
+  name      String   @unique
   icon      String?
-  createdAt DateTime           @default(now())
-  updatedAt DateTime           @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   properties PropertyAmenity[]
 
@@ -203,7 +206,8 @@ model Room {
   updatedAt     DateTime    @updatedAt
   deletedAt     DateTime?
 
-  bookings      Booking[]
+  bookings Booking[]
+  images   RoomImage[]
 
   @@index([propertyId])
   @@index([status])
@@ -212,29 +216,69 @@ model Room {
   @@map("rooms")
 }
 
-model Booking {
-  id            String        @id @default(cuid())
-  tenantId      String
-  tenant        User          @relation(fields: [tenantId], references: [id])
-  roomId        String
-  room          Room          @relation(fields: [roomId], references: [id])
-  propertyId    String
-  property      Property      @relation(fields: [propertyId], references: [id])
-  status        BookingStatus @default(PENDING)
-  startDate     DateTime
-  endDate       DateTime?
-  nightlyRate   Float
-  currency      String        @default("usd")
-  totalAmount   Float
-  platformFee   Float         @default(0)
-  message       String?
-  reviewedAt    DateTime?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  deletedAt     DateTime?
+model PropertyImage {
+  id         String   @id @default(cuid())
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  url        String
+  publicId   String
+  storage    String   @default("local")
+  width      Int?
+  height     Int?
+  bytes      Int?
+  mimeType   String?
+  position   Int      @default(0)
+  isPrimary  Boolean  @default(false)
+  createdAt  DateTime @default(now())
 
-  payments      Payment[]
-  reviews       Review[]
+  @@index([propertyId, position])
+  @@index([publicId])
+  @@map("property_images")
+}
+
+model RoomImage {
+  id        String   @id @default(cuid())
+  roomId    String
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  url       String
+  publicId  String
+  storage   String   @default("local")
+  width     Int?
+  height    Int?
+  bytes     Int?
+  mimeType  String?
+  position  Int      @default(0)
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([roomId, position])
+  @@index([publicId])
+  @@map("room_images")
+}
+
+model Booking {
+  id          String        @id @default(cuid())
+  tenantId    String
+  tenant      User          @relation(fields: [tenantId], references: [id])
+  roomId      String
+  room        Room          @relation(fields: [roomId], references: [id])
+  propertyId  String
+  property    Property      @relation(fields: [propertyId], references: [id])
+  status      BookingStatus @default(PENDING)
+  startDate   DateTime
+  endDate     DateTime?
+  nightlyRate Float
+  currency    String        @default("usd")
+  totalAmount Float
+  platformFee Float         @default(0)
+  message     String?
+  reviewedAt  DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deletedAt   DateTime?
+
+  payments Payment[]
+  reviews  Review[]
 
   @@index([tenantId])
   @@index([roomId])
@@ -246,21 +290,22 @@ model Booking {
 }
 
 model Payment {
-  id              String           @id @default(cuid())
-  bookingId       String
-  booking         Booking          @relation(fields: [bookingId], references: [id])
-  tenantId        String
-  tenant          User             @relation(fields: [tenantId], references: [id])
-  provider        PaymentProvider  @default(MOCK)
+  id                String          @id @default(cuid())
+  bookingId         String
+  booking           Booking         @relation(fields: [bookingId], references: [id])
+  tenantId          String
+  tenant            User            @relation(fields: [tenantId], references: [id])
+  provider          PaymentProvider @default(MOCK)
   providerPaymentId String?
-  amount          Float
-  currency        String           @default("usd")
-  status          PaymentStatus    @default(PENDING)
-  clientSecret    String?
-  metadata        Json?
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  amount            Float
+  currency          String          @default("usd")
+  status            PaymentStatus   @default(PENDING)
+  clientSecret      String?
+  metadata          Json?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
+  @@unique([provider, providerPaymentId])
   @@index([bookingId])
   @@index([tenantId])
   @@index([provider])
@@ -270,22 +315,22 @@ model Payment {
 }
 
 model Review {
-  id          String       @id @default(cuid())
-  subject     ReviewSubject
+  id           String        @id @default(cuid())
+  subject      ReviewSubject
   reviewableId String
-  authorId    String
-  author      User         @relation(fields: [authorId], references: [id])
-  bookingId   String?
-  booking     Booking?     @relation(fields: [bookingId], references: [id])
-  rating      Int          @default(5)
-  comment     String?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  authorId     String
+  author       User          @relation(fields: [authorId], references: [id])
+  bookingId    String?
+  booking      Booking?      @relation(fields: [bookingId], references: [id])
+  rating       Int           @default(5)
+  comment      String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
+  @@unique([bookingId, subject, reviewableId, authorId])
   @@index([subject, reviewableId])
   @@index([authorId])
   @@index([rating])
-  @@unique([bookingId, subject, reviewableId, authorId])
   @@map("reviews")
 }
 
@@ -303,16 +348,16 @@ model Favorite {
 }
 
 model Message {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   senderId    String
-  sender      User     @relation(fields: [senderId], references: [id])
+  sender      User      @relation(fields: [senderId], references: [id])
   recipientId String
   subject     String?
   body        String
   propertyId  String?
   property    Property? @relation(fields: [propertyId], references: [id])
   readAt      DateTime?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
 
   @@index([senderId])
   @@index([recipientId])
@@ -321,17 +366,17 @@ model Message {
 }
 
 model AuditLog {
-  id          String   @id @default(cuid())
-  action      AuditAction
-  actorId     String?
-  actor       User?    @relation(fields: [actorId], references: [id])
-  entityId    String?
-  entityType  String?
-  before      Json?
-  after       Json?
-  ip          String?
-  userAgent   String?
-  createdAt   DateTime @default(now())
+  id         String      @id @default(cuid())
+  action     AuditAction
+  actorId    String?
+  actor      User?       @relation(fields: [actorId], references: [id])
+  entityId   String?
+  entityType String?
+  before     Json?
+  after      Json?
+  ip         String?
+  userAgent  String?
+  createdAt  DateTime    @default(now())
 
   @@index([actorId])
   @@index([entityType, entityId])
