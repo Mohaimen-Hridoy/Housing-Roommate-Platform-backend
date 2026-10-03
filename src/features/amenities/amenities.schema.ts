@@ -13,4 +13,3 @@ export const amenityCreateSchema = z.object({
   icon: z.string().max(50).optional(),
 });
 
-export const amenityUpdateSchema = amenityCreateSchema.partial();

@@ -75,6 +75,3 @@ export function constructWebhookEvent(payload: Buffer, signature: string): Strip
   return stripe.webhooks.constructEvent(payload, signature, env.stripe.webhookSecret);
 }
 
-export function formatStripeAmount(amount: number): string {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: env.stripe.currency }).format(amount);
-}

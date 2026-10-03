@@ -44,14 +44,6 @@ export function createdResponse<T>(data: T, options?: { message?: string; meta?:
   return successResponse(data, { ...options, statusCode: HttpStatusCode.CREATED });
 }
 
-export function noContentResponse(): ApiResponse<null> {
-  return {
-    success: true,
-    statusCode: HttpStatusCode.NO_CONTENT,
-    message: "No Content",
-    data: null,
-  };
-}
 
 export function errorResponse(error: { message: string; statusCode: number; code?: string; details?: unknown }): ApiResponse<null> {
   const errors = Array.isArray(error.details) ? error.details : [];

@@ -12,17 +12,3 @@ export function authorize(...allowed: Role[]): (req: AuthenticatedRequest, _res:
     next();
   };
 }
-
-export function requireOwnerOrAdmin(req: AuthenticatedRequest, _res: Response, next: NextFunction) {
-  if (!req.user) return next(new UnauthorizedError("Authentication required"));
-  if (req.user.role !== Role.OWNER && req.user.role !== Role.ADMIN) {
-    return next(new ForbiddenError("Owner or Admin access required"));
-  }
-  next();
-}
-
-export function requireAdmin(req: AuthenticatedRequest, _res: Response, next: NextFunction) {
-  if (!req.user) return next(new UnauthorizedError("Authentication required"));
-  if (req.user.role !== Role.ADMIN) return next(new ForbiddenError("Admin access required"));
-  next();
-}
