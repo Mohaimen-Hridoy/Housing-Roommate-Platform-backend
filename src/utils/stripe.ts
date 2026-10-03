@@ -51,11 +51,19 @@ export async function createBookingCheckoutSession(params: CheckoutParams): Prom
       },
     ],
     payment_intent_data: {
-      application_fee_amount: feeAmount,
+      // NOTE: application_fee_amount is deliberately omitted. Stripe only
+      // accepts it on a destination charge (transfer_data[destination]) or a
+      // direct charge made with the platform's own OAuth key, so passing it
+      // against a single standard account fails with parameter_missing and
+      // breaks every checkout session. The fee is still recorded on
+      // Booking.platformFee for reporting; actually routing it to a connected
+      // landlord account would need Stripe Connect.
       metadata: {
         booking_id: params.bookingId,
         tenant_id: params.tenantId,
         platform: "housing-backend",
+        platform_fee_percent: String(env.stripe.platformFeePercent),
+        platform_fee_amount: String(feeAmount),
       },
     },
     metadata: {
