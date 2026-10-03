@@ -22,21 +22,25 @@ export function extractToken(req: Request): string | undefined {
 }
 
 export async function authenticate(req: AuthenticatedRequest, _res: Response, next: NextFunction) {
-  const token = extractToken(req);
-  if (!token) return next(new UnauthorizedError("Missing Authorization: Bearer <token>"));
+  try {
+    const token = extractToken(req);
+    if (!token) return next(new UnauthorizedError("Missing Authorization: Bearer <token>"));
 
-  const payload = verifyAccessToken(token);
-  const user = await prisma.user.findUnique({
-    where: { id: payload.sub },
-    select: { id: true, email: true, name: true, role: true, deletedAt: true },
-  });
+    const payload = verifyAccessToken(token);
+    const user = await prisma.user.findUnique({
+      where: { id: payload.sub },
+      select: { id: true, email: true, name: true, role: true, deletedAt: true },
+    });
 
-  if (!user) return next(new UnauthorizedError("User not found"));
-  if (user.deletedAt) return next(new UnauthorizedError("Account is disabled"));
+    if (!user) return next(new UnauthorizedError("User not found"));
+    if (user.deletedAt) return next(new UnauthorizedError("Account is disabled"));
 
-  req.user = { id: user.id, email: user.email, name: user.name, role: user.role };
-  req.tokenPayload = payload;
-  next();
+    req.user = { id: user.id, email: user.email, name: user.name, role: user.role };
+    req.tokenPayload = payload;
+    next();
+  } catch (err) {
+    next(err);
+  }
 }
 
 export function optionalAuth(req: AuthenticatedRequest, _res: Response, next: NextFunction) {

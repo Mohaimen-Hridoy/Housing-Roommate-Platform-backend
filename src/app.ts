@@ -11,6 +11,7 @@ import { stripeWebhookRouter } from "./features/payments/stripe.routes";
 
 export function createApp(): Application {
   const app = express();
+  app.set("trust proxy", 1);
 
   app.use((req: Request, _res, next: NextFunction) => {
     logger.info(`${req.method} ${req.originalUrl}`);
