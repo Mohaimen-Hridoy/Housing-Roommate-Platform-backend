@@ -386,5 +386,13 @@ export async function createBookingCheckout(id: string, actor: Actor) {
     successUrl: `${env.webAppUrl}/bookings/${booking.id}/success`,
     cancelUrl: `${env.webAppUrl}/bookings/${booking.id}`,
   });
+  await prisma.payment.update({
+    where: { id: payment.id },
+    data: {
+      provider: PaymentProvider.STRIPE,
+      status: PaymentStatus.PROCESSING,
+      providerPaymentId: typeof session.payment_intent === "string" ? session.payment_intent : null,
+    },
+  });
   return { provider: PaymentProvider.STRIPE, status: payment.status, clientSecret: null, checkoutUrl: session.url, amount: payment.amount, currency: payment.currency };
 }
