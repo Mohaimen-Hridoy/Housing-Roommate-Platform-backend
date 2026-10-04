@@ -44,7 +44,7 @@ housing-backend/
 ├── tests/                       # Integration tests (jest), 9 suites / 58 cases
 ├── docs/
 │   ├── openapi.json             # OpenAPI 3.0 spec (also served by the API)
-│   └── postman-collection.json  # Postman collection v2.1 (79 requests, 15 folders)
+│   └── postman-collection.json  # Postman collection v2.1 (91 requests, 16 folders)
 ├── scripts/                     # gen-openapi.js, gen-postman.js
 ├── .env.example
 ├── vercel.json
@@ -131,7 +131,7 @@ What is covered (9 suites, 58 cases):
 ## API documentation
 
 - **Swagger/OpenAPI** — `GET /api/v1/docs/openapi.json` (also `GET /docs`, which redirects).
-- **Postman** — `docs/postman-collection.json` (import directly in Postman). It is grouped into 15 folders, pre-fills the bearer token, and its test scripts capture `accessToken`, `propertyId`, `roomId` and `bookingId` into collection variables, so the whole API can be walked through without manually copying ids.
+- **Postman** — `docs/postman-collection.json` (import directly in Postman). It is grouped into 16 folders, pre-fills the bearer token, and its test scripts capture `accessToken`, `propertyId`, `roomId` and `bookingId` into collection variables, so the whole API can be walked through without manually copying ids.
 - Regenerate both with `npm run docs:gen`.
 
 ## Environment (`.env.example`)
