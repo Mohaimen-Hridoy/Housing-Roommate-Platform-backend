@@ -132,6 +132,7 @@ What is covered (9 suites, 58 cases):
 
 - **Swagger/OpenAPI** — `GET /api/v1/docs/openapi.json` (also `GET /docs`, which redirects).
 - **Postman** — `docs/postman-collection.json` (import directly in Postman). It is grouped into 16 folders, pre-fills the bearer token, and its test scripts capture `accessToken`, `propertyId`, `roomId` and `bookingId` into collection variables, so the whole API can be walked through without manually copying ids.
+- **One-click demo** — the `Demo walkthrough (run in order)` folder runs requests 0-11 against the live deployment with 38 assertions. Right-click the folder and choose **Run collection** for a full pass/fail report, or press **Send** on any single step: it asserts the expected status, captures what the next step needs, then hands off to the next request by itself. The walkthrough is repeatable — step 5 puts the seeded room back to `AVAILABLE` and step 6 advances the booking window on every run.
 - Regenerate both with `npm run docs:gen`.
 
 ## Environment (`.env.example`)

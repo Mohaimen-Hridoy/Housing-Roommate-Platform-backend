@@ -367,6 +367,12 @@ const tagDescriptions = Object.fromEntries((spec.tags || []).map((t) => [t.name,
 
 const makeLogin = (role, label) => ({
   name: label,
+  expect: 200,
+  checks: [
+    `pm.test('${role} access token captured', function () { pm.expect(data.accessToken).to.be.a('string'); pm.expect(data.accessToken.length).to.be.greaterThan(20); });`,
+    `pm.test('${role} refresh token captured', function () { pm.expect(data.refreshToken).to.be.a('string'); });`,
+    `pm.test('${role} token type is Bearer', function () { pm.expect(data.tokenType).to.eql('Bearer'); });`,
+  ],
   request: {
     method: "POST",
     header: [{ key: "Content-Type", value: "application/json", type: "text" }],
@@ -390,7 +396,12 @@ const makeLogin = (role, label) => ({
           `if (d.accessToken) pm.collectionVariables.set('${role}Token', d.accessToken);`,
           "if (d.accessToken) pm.collectionVariables.set('accessToken', d.accessToken);",
           "if (d.refreshToken) pm.collectionVariables.set('refreshToken', d.refreshToken);",
-          `if (d.user && d.user.id) pm.collectionVariables.set('${role}UserId', d.user.id);`,
+          "// /auth/login returns no user object, so take the id and role from the access token claims.",
+          "try {",
+          "  const claims = JSON.parse(atob(String(d.accessToken).split('.')[1]));",
+          `  if (claims.sub) pm.collectionVariables.set('${role}UserId', claims.sub);`,
+          `  if (claims.role) pm.collectionVariables.set('${role}Role', claims.role);`,
+          "} catch (e) {}",
         ],
       },
     },
@@ -399,7 +410,9 @@ const makeLogin = (role, label) => ({
 
 const walkthrough = [
   {
-    name: "0. Log in as all three roles",
+    name: "0. Health check (deployment up)",
+    expect: 200,
+    checks: ["pm.test('service status ok', function () { pm.expect(data.status).to.eql('ok'); });"],
     request: {
       method: "GET",
       header: [],
@@ -415,6 +428,11 @@ const walkthrough = [
   makeLogin("tenant", "3. Log in as TENANT"),
   {
     name: "4. Property detail (public, no token)",
+    expect: 200,
+    checks: [
+      "pm.test('property id returned', function () { pm.expect(data.id).to.be.a('string'); });",
+      "pm.test('rooms array present', function () { pm.expect(data.rooms).to.be.an('array'); });",
+    ],
     request: {
       method: "GET",
       header: [],
@@ -426,6 +444,8 @@ const walkthrough = [
   },
   {
     name: "5. Reset a room to AVAILABLE",
+    expect: 200,
+    checks: ["pm.test('room is AVAILABLE', function () { pm.expect(data.status).to.eql('AVAILABLE'); });"],
     request: {
       method: "PATCH",
       header: [{ key: "Content-Type", value: "application/json", type: "text" }],
@@ -439,6 +459,13 @@ const walkthrough = [
   },
   {
     name: "6. Create a booking (tenant)",
+    expect: 201,
+    checks: [
+      "pm.test('room flipped to RESERVED', function () { pm.expect(data.status).to.eql('PENDING'); });",
+    ],
+    checksAfter: [
+      "pm.test('bookingId captured into variables', function () { pm.expect(pm.collectionVariables.get('bookingId')).to.be.a('string'); pm.expect(pm.collectionVariables.get('bookingId').length).to.be.greaterThan(0); });",
+    ],
     request: {
       method: "POST",
       header: [{ key: "Content-Type", value: "application/json", type: "text" }],
@@ -453,13 +480,41 @@ const walkthrough = [
       },
       url: { raw: `${BASE_URL}/bookings`, host: [BASE_URL], path: ["bookings"] },
       auth: TENANT,
-      description: "Stores bookingId for the steps that follow.",
+      description: "Stores bookingId for the steps that follow. The pre-request script moves the booking window forward on every run, so re-running the collection never hits the 409 'Room is already booked for these dates'.",
     },
     response: [],
-    event: [{ listen: "test", script: { type: "text/javascript", exec: CAPTURES["POST /bookings"] } }],
+    event: [
+      {
+        listen: "prerequest",
+        script: {
+          type: "text/javascript",
+          exec: [
+            "// Advance to a fresh 7-day window on every run. The API rejects an overlapping",
+            "// booking with 409 'Room is already booked for these dates', so a fixed window would",
+            "// make the second run of this walkthrough fail.",
+            "const run = Number(pm.collectionVariables.get('bookingRun') || 0) + 1;",
+            "pm.collectionVariables.set('bookingRun', String(run));",
+            "const start = new Date();",
+            "start.setUTCDate(start.getUTCDate() + 30 + run * 7);",
+            "const end = new Date(start);",
+            "end.setUTCDate(end.getUTCDate() + 4);",
+            "const fmt = (x) => x.toISOString().slice(0, 10);",
+            "pm.collectionVariables.set('bookingStartDate', fmt(start));",
+            "pm.collectionVariables.set('bookingEndDate', fmt(end));",
+          ],
+        },
+      },
+      { listen: "test", script: { type: "text/javascript", exec: CAPTURES["POST /bookings"] } },
+    ],
   },
   {
     name: "7. Approve the booking (owner)",
+    expect: 200,
+    checks: [
+      "pm.test('booking is APPROVED', function () { pm.expect(data.status).to.eql('APPROVED'); });",
+      "pm.test('total amount computed', function () { pm.expect(data.totalAmount).to.be.a('number'); });",
+      "pm.test('Stripe payment record attached', function () { pm.expect(data.payment).to.be.an('object'); });",
+    ],
     request: {
       method: "PATCH",
       header: [{ key: "Content-Type", value: "application/json", type: "text" }],
@@ -473,6 +528,11 @@ const walkthrough = [
   },
   {
     name: "8. Stripe checkout session (tenant)",
+    expect: 200,
+    checks: [
+      "pm.test('hosted checkoutUrl returned', function () { pm.expect(data.checkoutUrl).to.be.a('string').and.to.match(/^https:\\/\\//); });",
+      "pm.test('provider is stripe', function () { pm.expect(String(data.provider).toLowerCase()).to.eql('stripe'); });",
+    ],
     request: {
       method: "POST",
       header: [],
@@ -485,6 +545,8 @@ const walkthrough = [
   },
   {
     name: "9. RBAC proof: /admin/stats as OWNER (expect 403)",
+    expect: 403,
+    checks: ["pm.test('owner is forbidden', function () { pm.expect(pm.response.code).to.eql(403); });"],
     request: {
       method: "GET",
       header: [],
@@ -496,6 +558,11 @@ const walkthrough = [
   },
   {
     name: "10. RBAC proof: /admin/stats as ADMIN (expect 200)",
+    expect: 200,
+    checks: [
+      "pm.test('admin is allowed', function () { pm.expect(pm.response.code).to.eql(200); });",
+      "pm.test('stats buckets present', function () { pm.expect(data.users).to.be.an('object'); pm.expect(data.bookings).to.be.an('object'); });",
+    ],
     request: {
       method: "GET",
       header: [],
@@ -507,6 +574,12 @@ const walkthrough = [
   },
   {
     name: "11. Health: storage driver and cache backend",
+    expect: 200,
+    checks: [
+      "pm.test('cloudinary storage active', function () { pm.expect(data.storage).to.eql('cloudinary'); });",
+      "pm.test('redis cache active', function () { pm.expect(data.cache && data.cache.backend).to.eql('redis'); });",
+      "pm.test('stripe configured', function () { pm.expect(data.stripe).to.eql(true); });",
+    ],
     request: {
       method: "GET",
       header: [],
@@ -518,6 +591,39 @@ const walkthrough = [
   },
 ];
 
+/**
+ * Turn each walkthrough entry into a self-checking, self-advancing step.
+ *
+ * The final test script is: assertions, then the entry's own variable captures
+ * (already set by earlier steps), then the hand-off to the next request. Names
+ * are unique per request, so nothing here can collide with the capture scripts
+ * that declare `d`.
+ */
+walkthrough.forEach((entry, index) => {
+  const next = walkthrough[index + 1];
+  const existing = entry.event || [];
+  const preScripts = existing.filter((e) => e.listen === "prerequest");
+  const priorTest = existing.find((e) => e.listen === "test");
+  const priorExec = priorTest && priorTest.script && priorTest.script.exec ? priorTest.script.exec.slice() : [];
+
+  const asserts = [
+    `const body = pm.response.toJSON();`,
+    `const data = body.data || {};`,
+    `pm.test('status ${entry.expect}', function () { pm.expect(pm.response.code).to.eql(${entry.expect}); });`,
+    ...(entry.checks || []),
+  ];
+
+  // checksAfter run once the captures above have stored their variables
+  const after = entry.checksAfter || [];
+
+  const chain = next ? [`postman.setNextRequest(${JSON.stringify(next.name)});`] : [];
+
+  entry.event = [
+    ...preScripts,
+    { listen: "test", script: { type: "text/javascript", exec: [...asserts, ...priorExec, ...after, ...chain] } },
+  ];
+});
+
 const collection = {
   info: {
     name: spec.info.title,
@@ -525,13 +631,18 @@ const collection = {
       `${spec.info.description}\n\n` +
       `Generated from docs/openapi.json by scripts/gen-postman.js (OpenAPI ${spec.openapi}).\n\n` +
       `HOW TO USE\n` +
-      `1. Open the "Demo walkthrough (run in order)" folder and run requests 0-11 top to bottom.\n` +
-      `2. The login requests capture adminToken, ownerToken, tenantToken and refreshToken into the\n` +
+      `1. Open the "Demo walkthrough (run in order)" folder and right-click it -> "Run collection".\n` +
+      `   That executes requests 0-11 in order and prints a pass/fail report for every assertion.\n` +
+      `2. Alternatively, open any single walkthrough request and hit Send: each step asserts its expected\n` +
+      `   status, captures what the next step needs, then hands off to the next request automatically.\n` +
+      `3. The login requests capture adminToken, ownerToken, tenantToken and refreshToken into the\n` +
       `   collection variables, so every protected request runs without copying tokens by hand.\n` +
-      `3. Create/booking/room requests capture propertyId, roomId, bookingId, paymentId and\n` +
+      `4. Create/booking/room requests capture propertyId, roomId, bookingId, paymentId and\n` +
       `   imageId automatically, so path parameters never need manual editing.\n` +
-      `4. Requests 9 and 10 hit the same endpoint as different roles (403 vs 200) to demonstrate RBAC.\n` +
-      `5. Request 8 returns a hosted Stripe checkout URL. Pay with test card 4242 4242 4242 4242.\n\n` +
+      `5. Requests 9 and 10 hit the same endpoint as different roles (403 vs 200) to demonstrate RBAC.\n` +
+      `6. Request 8 returns a hosted Stripe checkout URL. Pay with test card 4242 4242 4242 4242.\n` +
+      `7. The walkthrough is repeatable: step 5 puts the seeded room back to AVAILABLE and step 6\n` +
+      `   advances the booking dates on every run, so it stays green however often you run it.\n\n` +
       `Demo accounts\n` +
       `  admin   admin@housing.local / Admin1234!\n` +
       `  owner   owner@housing.local / Owner1234!\n` +
@@ -578,14 +689,22 @@ const collection = {
     { key: "imageId", value: "", type: "string" },
     { key: "userId", value: "", type: "string" },
     { key: "ownerUserId", value: "", type: "string" },
+    { key: "adminUserId", value: "", type: "string" },
+    { key: "tenantUserId", value: "", type: "string" },
+    { key: "adminRole", value: "", type: "string" },
+    { key: "ownerRole", value: "", type: "string" },
+    { key: "tenantRole", value: "", type: "string" },
     { key: "bookingStartDate", value: bookingStart, type: "string" },
     { key: "bookingEndDate", value: bookingEnd, type: "string" },
+    { key: "bookingRun", value: "0", type: "string" },
   ],
   item: [
     {
       name: "Demo walkthrough (run in order)",
       description:
-        "A self-contained demo that exercises the whole platform. Run 0-11 in order; each request prepares the variables the next one needs.",
+        "A self-contained demo that exercises the whole platform. Run 0-11 in order; each request prepares the variables the next one needs. " +
+        "Right-click the folder and choose \"Run collection\" for a single-click run with a pass/fail report, or press Send on any one step and it " +
+        "asserts, captures and hands off to the next step by itself.",
       item: walkthrough,
     },
     ...[...groups.entries()].map(([tag, items]) => ({
