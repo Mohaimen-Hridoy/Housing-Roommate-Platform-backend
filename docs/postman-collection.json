@@ -134,6 +134,81 @@
       "key": "bookingEndDate",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "name",
+      "value": "Demo User",
+      "type": "string"
+    },
+    {
+      "key": "email",
+      "value": "tenant@housing.local",
+      "type": "string"
+    },
+    {
+      "key": "password",
+      "value": "Tenant1234!",
+      "type": "string"
+    },
+    {
+      "key": "phone",
+      "value": "+15555550123",
+      "type": "string"
+    },
+    {
+      "key": "idToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "startDate",
+      "value": "2026-11-10",
+      "type": "string"
+    },
+    {
+      "key": "endDate",
+      "value": "2026-12-10",
+      "type": "string"
+    },
+    {
+      "key": "message",
+      "value": "Demo message",
+      "type": "string"
+    },
+    {
+      "key": "reason",
+      "value": "Demo reason",
+      "type": "string"
+    },
+    {
+      "key": "amenityId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "recipientId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "subject",
+      "value": "Demo message",
+      "type": "string"
+    },
+    {
+      "key": "body",
+      "value": "Hello from the housing platform demo.",
+      "type": "string"
+    },
+    {
+      "key": "otherUserId",
+      "value": "",
+      "type": "string"
     }
   ],
   "item": [
@@ -314,13 +389,13 @@
               ]
             },
             "url": {
-              "raw": "{{baseUrl}}/properties/cmusua27g0004jt047d3sfdpd/rooms?page=1&pageSize=1",
+              "raw": "{{baseUrl}}/properties/seed-property-1/rooms?page=1&pageSize=1",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "properties",
-                "cmusua27g0004jt047d3sfdpd",
+                "seed-property-1",
                 "rooms?page=1&pageSize=1"
               ]
             }
@@ -426,7 +501,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"roomId\": \"cmusua2k50007jt0416usoh6s\",\n  \"startDate\": \"2026-11-01\",\n  \"endDate\": \"2026-12-01\",\n  \"message\": \"Demo booking created from the Postman walkthrough\"\n}",
+              "raw": "{\n  \"roomId\": \"seed-room-1\",\n  \"startDate\": \"2026-11-10\",\n  \"endDate\": \"2026-12-10\",\n  \"message\": \"Demo booking created from the Postman walkthrough\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -495,7 +570,7 @@
             "header": [
               {
                 "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
+                "value": "Bearer {{tenantToken}}",
                 "type": "text"
               },
               {
@@ -1032,6 +1107,15 @@
                 "password",
                 "change"
               ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"Tenant1234!\",\n  \"newPassword\": \"Tenant12345!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
           },
           "response": []
@@ -1124,6 +1208,15 @@
                 "users",
                 "{{id}}"
               ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Demo User\",\n  \"phone\": \"+15555550123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
           },
           "response": []
@@ -1298,7 +1391,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties?status=&city=&search=&ownerId=&page=",
+              "raw": "{{baseUrl}}/properties?status=PUBLISHED&city=Metropolis&search=Downtown&page=1",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1308,27 +1401,28 @@
               "query": [
                 {
                   "key": "status",
-                  "value": "",
+                  "value": "PUBLISHED",
                   "description": ""
                 },
                 {
                   "key": "city",
-                  "value": "",
+                  "value": "Metropolis",
                   "description": ""
                 },
                 {
                   "key": "search",
-                  "value": "",
+                  "value": "Downtown",
                   "description": ""
                 },
                 {
                   "key": "ownerId",
                   "value": "",
+                  "disabled": true,
                   "description": ""
                 },
                 {
                   "key": "page",
-                  "value": "",
+                  "value": "1",
                   "description": ""
                 }
               ]
@@ -1360,6 +1454,15 @@
               "path": [
                 "properties"
               ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Demo Roommate Property\",\n  \"description\": \"A comfortable property for the API walkthrough.\",\n  \"address\": \"123 Demo Street\",\n  \"city\": \"Metropolis\",\n  \"state\": \"NY\",\n  \"postalCode\": \"10001\",\n  \"country\": \"US\",\n  \"status\": \"PUBLISHED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
           },
           "response": [],
@@ -1432,6 +1535,15 @@
                 "properties",
                 "{{id}}"
               ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Demo Property\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
           },
           "response": []
@@ -1596,6 +1708,15 @@
                 "{{propertyId}}",
                 "rooms"
               ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Demo Room\",\n  \"description\": \"A bright furnished room for the walkthrough.\",\n  \"area\": 24,\n  \"rent\": 1200,\n  \"currency\": \"usd\",\n  \"deposit\": 600,\n  \"bedrooms\": 1,\n  \"bathrooms\": 1,\n  \"facing\": \"EAST\",\n  \"availableFrom\": \"2026-11-01\",\n  \"status\": \"AVAILABLE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
           },
           "response": [],
@@ -1637,7 +1758,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/rooms?status=&minRent=&maxRent=&facing=&minBedrooms=&availableFrom=",
+              "raw": "{{baseUrl}}/rooms?status=AVAILABLE&minRent=0&maxRent=5000&facing=EAST&minBedrooms=1&availableFrom=2026-11-01",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1647,32 +1768,32 @@
               "query": [
                 {
                   "key": "status",
-                  "value": "",
+                  "value": "AVAILABLE",
                   "description": ""
                 },
                 {
                   "key": "minRent",
-                  "value": "",
+                  "value": "0",
                   "description": ""
                 },
                 {
                   "key": "maxRent",
-                  "value": "",
+                  "value": "5000",
                   "description": ""
                 },
                 {
                   "key": "facing",
-                  "value": "",
+                  "value": "EAST",
                   "description": ""
                 },
                 {
                   "key": "minBedrooms",
-                  "value": "",
+                  "value": "1",
                   "description": ""
                 },
                 {
                   "key": "availableFrom",
-                  "value": "",
+                  "value": "2026-11-01",
                   "description": ""
                 }
               ]
@@ -1864,7 +1985,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/amenities?search=",
+              "raw": "{{baseUrl}}/amenities?search=Wifi",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1874,7 +1995,7 @@
               "query": [
                 {
                   "key": "search",
-                  "value": "",
+                  "value": "Wifi",
                   "description": ""
                 }
               ]
@@ -1906,6 +2027,15 @@
               "path": [
                 "amenities"
               ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Study Room\",\n  \"icon\": \"study\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
           },
           "response": []
@@ -1962,7 +2092,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings?status=&tenantId=&propertyId=",
+              "raw": "{{baseUrl}}/bookings?status=APPROVED&tenantId=&propertyId=seed-property-1",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1972,17 +2102,18 @@
               "query": [
                 {
                   "key": "status",
-                  "value": "",
+                  "value": "APPROVED",
                   "description": ""
                 },
                 {
                   "key": "tenantId",
                   "value": "",
+                  "disabled": true,
                   "description": ""
                 },
                 {
                   "key": "propertyId",
-                  "value": "",
+                  "value": "seed-property-1",
                   "description": ""
                 }
               ]
@@ -2190,6 +2321,15 @@
                 "{{id}}",
                 "approve"
               ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
           },
           "response": []
@@ -2320,7 +2460,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/payments?status=&provider=&bookingId=&tenantId=",
+              "raw": "{{baseUrl}}/payments?status=SUCCEEDED&provider=STRIPE&bookingId=seed-booking-1&tenantId=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2330,22 +2470,23 @@
               "query": [
                 {
                   "key": "status",
-                  "value": "",
+                  "value": "SUCCEEDED",
                   "description": ""
                 },
                 {
                   "key": "provider",
-                  "value": "",
+                  "value": "STRIPE",
                   "description": ""
                 },
                 {
                   "key": "bookingId",
-                  "value": "",
+                  "value": "seed-booking-1",
                   "description": ""
                 },
                 {
                   "key": "tenantId",
                   "value": "",
+                  "disabled": true,
                   "description": ""
                 }
               ]
@@ -2484,7 +2625,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/reviews?subject=&reviewableId=&authorId=&minRating=&maxRating=",
+              "raw": "{{baseUrl}}/reviews?subject=PROPERTY&reviewableId=seed-property-1&page=1&pageSize=20",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2494,27 +2635,27 @@
               "query": [
                 {
                   "key": "subject",
-                  "value": "",
+                  "value": "PROPERTY",
                   "description": ""
                 },
                 {
                   "key": "reviewableId",
-                  "value": "",
+                  "value": "seed-property-1",
                   "description": ""
                 },
                 {
-                  "key": "authorId",
-                  "value": "",
+                  "key": "page",
+                  "value": "1",
                   "description": ""
                 },
                 {
-                  "key": "minRating",
-                  "value": "",
+                  "key": "pageSize",
+                  "value": "20",
                   "description": ""
                 },
                 {
-                  "key": "maxRating",
-                  "value": "",
+                  "key": "sortBy",
+                  "value": "createdAt",
                   "description": ""
                 }
               ]
@@ -2529,7 +2670,7 @@
             "header": [
               {
                 "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
+                "value": "Bearer {{tenantToken}}",
                 "type": "text"
               },
               {
@@ -2554,7 +2695,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"subject\": \"ROOM\",\n  \"reviewableId\": \"{{reviewableId}}\",\n  \"bookingId\": \"{{bookingId}}\",\n  \"rating\": 0,\n  \"comment\": \"{{comment}}\"\n}",
+              "raw": "{\n  \"subject\": \"PROPERTY\",\n  \"reviewableId\": \"seed-property-1\",\n  \"bookingId\": \"{{bookingId}}\",\n  \"rating\": 5,\n  \"comment\": \"Nice place\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2780,7 +2921,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/messages?folder=&read=&propertyId=",
+              "raw": "{{baseUrl}}/messages?folder=inbox&read=false&page=1&pageSize=20",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2790,17 +2931,18 @@
               "query": [
                 {
                   "key": "folder",
-                  "value": "",
+                  "value": "inbox",
                   "description": ""
                 },
                 {
                   "key": "read",
-                  "value": "",
+                  "value": "false",
                   "description": ""
                 },
                 {
                   "key": "propertyId",
                   "value": "",
+                  "disabled": true,
                   "description": ""
                 }
               ]
@@ -2991,7 +3133,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/audit/logs?action=&entityType=&actorId=",
+              "raw": "{{baseUrl}}/audit/logs?action=REVIEW_CREATED&entityType=review&page=1&pageSize=20",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3002,17 +3144,18 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "",
+                  "value": "REVIEW_CREATED",
                   "description": ""
                 },
                 {
                   "key": "entityType",
-                  "value": "",
+                  "value": "review",
                   "description": ""
                 },
                 {
                   "key": "actorId",
                   "value": "",
+                  "disabled": true,
                   "description": ""
                 }
               ]
@@ -3413,7 +3556,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/admin/stats?days=",
+              "raw": "{{baseUrl}}/admin/stats?days=30",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3424,7 +3567,7 @@
               "query": [
                 {
                   "key": "days",
-                  "value": "",
+                  "value": "30",
                   "description": ""
                 }
               ]
