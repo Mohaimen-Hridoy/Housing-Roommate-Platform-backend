@@ -15,6 +15,29 @@ describe("Admin statistics", () => {
     expect(typeof res.body.data.users.total).toBe("number");
   });
 
+  it("status buckets carry numeric counts, never null", async () => {
+    const admin = await makeAdmin();
+    await createPublishedPropertyWithRoom(await makeOwner("stats-bucket-owner@test.local"));
+
+    const res = await request(app).get("/api/v1/admin/stats").set(authHeader(admin.token));
+
+    expect(res.status).toBe(200);
+    const { properties, rooms, bookings, payments } = res.body.data;
+
+    for (const bucket of [properties.byStatus, rooms.byStatus, bookings.byStatus, payments.byStatus]) {
+      // an empty table legitimately buckets to {}, but any value present must be
+      // a real count: Prisma's groupBy _count is an object, and coercing it
+      // directly used to yield NaN, which serialises as null
+      for (const value of Object.values(bucket) as unknown[]) {
+        expect(typeof value).toBe("number");
+        expect(Number.isFinite(value as number)).toBe(true);
+      }
+    }
+
+    // a freshly published property must be counted in the PUBLISHED bucket
+    expect(properties.byStatus.PUBLISHED).toBeGreaterThanOrEqual(1);
+  });
+
   it("tenant is denied platform statistics (RBAC)", async () => {
     const tenant = await makeTenant("stats-tenant@test.local");
     const res = await request(app).get("/api/v1/admin/stats").set(authHeader(tenant.token));

@@ -7,7 +7,11 @@ type Bucket = Record<string, number>;
 
 const toBuckets = <T extends string>(rows: { [key: string]: unknown }[], key: T): Bucket =>
   rows.reduce<Bucket>((acc, row) => {
-    acc[String(row[key] ?? "UNKNOWN")] = Number(row._count ?? 0);
+    // Prisma groupBy returns _count as an object ({ _all: n }), so the bare
+    // value would coerce to NaN and serialise as null.
+    const count = row._count as { _all?: number } | number | undefined;
+    const value = typeof count === "object" && count !== null ? count._all : count;
+    acc[String(row[key] ?? "UNKNOWN")] = Number(value ?? 0);
     return acc;
   }, {});
 
