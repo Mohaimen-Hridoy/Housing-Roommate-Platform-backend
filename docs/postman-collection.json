@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Apollo B7A6 Housing & Roommate Platform API",
-    "description": "Versioned backend API for the Housing & Roommate Platform (Node.js + TypeScript + Express + Prisma + Stripe).\n\nGenerated from docs/openapi.json (OpenAPI 3.0.3).\nThe collection defaults to the deployed API. Change the \"baseUrl\" variable for local testing.\nDemo admin: admin@housing.local / Admin1234!\n\nAuth flows capture tokens automatically: the Auth folder scripts store accessToken and refreshToken\nin the collection variables, so protected requests work without manual copying.",
+    "description": "Versioned backend API for the Housing & Roommate Platform (Node.js + TypeScript + Express + Prisma + Stripe).\n\nGenerated from docs/openapi.json by scripts/gen-postman.js (OpenAPI 3.0.3).\n\nHOW TO USE\n1. Open the \"Demo walkthrough (run in order)\" folder and run requests 0-11 top to bottom.\n2. The login requests capture adminToken, ownerToken, tenantToken and refreshToken into the\n   collection variables, so every protected request runs without copying tokens by hand.\n3. Create/booking/room requests capture propertyId, roomId, bookingId, paymentId and\n   imageId automatically, so path parameters never need manual editing.\n4. Requests 9 and 10 hit the same endpoint as different roles (403 vs 200) to demonstrate RBAC.\n5. Request 8 returns a hosted Stripe checkout URL. Pay with test card 4242 4242 4242 4242.\n\nDemo accounts\n  admin   admin@housing.local / Admin1234!\n  owner   owner@housing.local / Owner1234!\n  tenant  tenant@housing.local / Tenant1234!\n\nSet the \"baseUrl\" collection variable if you need to point this at another environment.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -25,29 +25,12 @@
           "}"
         ]
       }
-    },
-    {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "exec": [
-          "const start = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);",
-          "const end = new Date(Date.now() + 37 * 24 * 60 * 60 * 1000);",
-          "pm.collectionVariables.set('bookingStartDate', start.toISOString().slice(0, 10));",
-          "pm.collectionVariables.set('bookingEndDate', end.toISOString().slice(0, 10));"
-        ]
-      }
     }
   ],
   "variable": [
     {
       "key": "baseUrl",
       "value": "https://housing-roommate-platform-backend.vercel.app/api/v1",
-      "type": "string"
-    },
-    {
-      "key": "accessToken",
-      "value": "",
       "type": "string"
     },
     {
@@ -62,6 +45,11 @@
     },
     {
       "key": "tenantToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
       "value": "",
       "type": "string"
     },
@@ -101,13 +89,8 @@
       "type": "string"
     },
     {
-      "key": "id",
-      "value": "",
-      "type": "string"
-    },
-    {
       "key": "propertyId",
-      "value": "",
+      "value": "seed-property-1",
       "type": "string"
     },
     {
@@ -126,112 +109,103 @@
       "type": "string"
     },
     {
-      "key": "bookingStartDate",
-      "value": "2026-11-10",
-      "type": "string"
-    },
-    {
-      "key": "bookingEndDate",
-      "value": "2026-12-10",
-      "type": "string"
-    },
-    {
-      "key": "name",
-      "value": "Demo User",
-      "type": "string"
-    },
-    {
-      "key": "email",
-      "value": "tenant@housing.local",
-      "type": "string"
-    },
-    {
-      "key": "password",
-      "value": "Tenant1234!",
-      "type": "string"
-    },
-    {
-      "key": "phone",
-      "value": "+15555550123",
-      "type": "string"
-    },
-    {
-      "key": "idToken",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "token",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "startDate",
-      "value": "2026-11-10",
-      "type": "string"
-    },
-    {
-      "key": "endDate",
-      "value": "2026-12-10",
-      "type": "string"
-    },
-    {
-      "key": "message",
-      "value": "Demo message",
-      "type": "string"
-    },
-    {
-      "key": "reason",
-      "value": "Demo reason",
-      "type": "string"
-    },
-    {
       "key": "amenityId",
       "value": "",
       "type": "string"
     },
     {
-      "key": "recipientId",
+      "key": "reviewId",
       "value": "",
       "type": "string"
     },
     {
-      "key": "subject",
-      "value": "Demo message",
-      "type": "string"
-    },
-    {
-      "key": "body",
-      "value": "Hello from the housing platform demo.",
-      "type": "string"
-    },
-    {
-      "key": "otherUserId",
+      "key": "favoriteId",
       "value": "",
+      "type": "string"
+    },
+    {
+      "key": "messageId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "auditLogId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "imageId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "ownerUserId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "bookingStartDate",
+      "value": "2026-11-03",
+      "type": "string"
+    },
+    {
+      "key": "bookingEndDate",
+      "value": "2026-12-03",
       "type": "string"
     }
   ],
   "item": [
     {
       "name": "Demo walkthrough (run in order)",
-      "description": "Uses the current seeded live demo data. Login and booking bodies contain real values; run requests from top to bottom.",
+      "description": "A self-contained demo that exercises the whole platform. Run 0-11 in order; each request prepares the variables the next one needs.",
       "item": [
         {
-          "name": "1. Login as admin",
+          "name": "0. Log in as all three roles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Confirms the deployment is up. Then run the three login requests that follow."
+          },
+          "response": [],
+          "response_name": "health"
+        },
+        {
+          "name": "1. Log in as ADMIN",
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
                 "type": "text"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/auth/login",
               "host": [
@@ -242,15 +216,10 @@
                 "login"
               ]
             },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"admin@housing.local\",\n  \"password\": \"Admin1234!\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Stores adminToken and refreshToken in the collection variables, so the rest of the collection runs without copying tokens."
           },
           "response": [],
           "event": [
@@ -259,35 +228,36 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "const body = pm.response.json();",
-                  "if (body && body.data && body.data.accessToken) {",
-                  "  pm.collectionVariables.set('accessToken', body.data.accessToken);",
-                  "}",
-                  "if (body && body.data && body.data.refreshToken) {",
-                  "  pm.collectionVariables.set('refreshToken', body.data.refreshToken);",
-                  "}",
-                  "if (pm.response.json()?.data?.accessToken) pm.collectionVariables.set('adminToken', pm.response.json().data.accessToken);"
+                  "const d = (pm.response.json() || {}).data || {};",
+                  "if (d.accessToken) pm.collectionVariables.set('adminToken', d.accessToken);",
+                  "if (d.accessToken) pm.collectionVariables.set('accessToken', d.accessToken);",
+                  "if (d.refreshToken) pm.collectionVariables.set('refreshToken', d.refreshToken);",
+                  "if (d.user && d.user.id) pm.collectionVariables.set('adminUserId', d.user.id);"
                 ]
               }
             }
           ]
         },
         {
-          "name": "2. Login as owner",
+          "name": "2. Log in as OWNER",
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
                 "type": "text"
               }
             ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{ownerEmail}}\",\n  \"password\": \"{{ownerPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/auth/login",
               "host": [
@@ -298,60 +268,62 @@
                 "login"
               ]
             },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Stores ownerToken and refreshToken in the collection variables, so the rest of the collection runs without copying tokens."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d = (pm.response.json() || {}).data || {};",
+                  "if (d.accessToken) pm.collectionVariables.set('ownerToken', d.accessToken);",
+                  "if (d.accessToken) pm.collectionVariables.set('accessToken', d.accessToken);",
+                  "if (d.refreshToken) pm.collectionVariables.set('refreshToken', d.refreshToken);",
+                  "if (d.user && d.user.id) pm.collectionVariables.set('ownerUserId', d.user.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Log in as TENANT",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"owner@housing.local\",\n  \"password\": \"Owner1234!\"\n}",
+              "raw": "{\n  \"email\": \"{{tenantEmail}}\",\n  \"password\": \"{{tenantPassword}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            }
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const body = pm.response.json();",
-                  "if (body?.data?.accessToken) pm.collectionVariables.set('ownerToken', body.data.accessToken);"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "3. Load a live property",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{ownerToken}}",
-                  "type": "string"
-                }
-              ]
             },
             "url": {
-              "raw": "{{baseUrl}}/properties?page=1&pageSize=1",
+              "raw": "{{baseUrl}}/auth/login",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "properties?page=1&pageSize=1"
+                "auth",
+                "login"
               ]
-            }
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Stores tenantToken and refreshToken in the collection variables, so the rest of the collection runs without copying tokens."
           },
           "response": [],
           "event": [
@@ -360,135 +332,102 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "const body = pm.response.json();",
-                  "if (body?.data?.[0]?.id) pm.collectionVariables.set('propertyId', body.data[0].id);"
+                  "const d = (pm.response.json() || {}).data || {};",
+                  "if (d.accessToken) pm.collectionVariables.set('tenantToken', d.accessToken);",
+                  "if (d.accessToken) pm.collectionVariables.set('accessToken', d.accessToken);",
+                  "if (d.refreshToken) pm.collectionVariables.set('refreshToken', d.refreshToken);",
+                  "if (d.user && d.user.id) pm.collectionVariables.set('tenantUserId', d.user.id);"
                 ]
               }
             }
           ]
         },
         {
-          "name": "4. Load a live room",
+          "name": "4. Property detail (public, no token)",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{ownerToken}}",
-                  "type": "string"
-                }
-              ]
-            },
+            "header": [],
             "url": {
-              "raw": "{{baseUrl}}/properties/seed-property-1/rooms?page=1&pageSize=1",
+              "raw": "{{baseUrl}}/properties/seed-property-1",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "properties",
-                "seed-property-1",
-                "rooms?page=1&pageSize=1"
+                "seed-property-1"
               ]
-            }
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Seeded property with images, rooms and amenities."
           },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const body = pm.response.json();",
-                  "if (body?.data?.[0]?.id) pm.collectionVariables.set('roomId', body.data[0].id);"
-                ]
-              }
-            }
-          ]
+          "response": []
         },
         {
-          "name": "5. Login as tenant",
+          "name": "5. Reset a room to AVAILABLE",
           "request": {
-            "method": "POST",
+            "method": "PATCH",
             "header": [
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
                 "type": "text"
               }
             ],
-            "url": {
-              "raw": "{{baseUrl}}/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "login"
-              ]
-            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"tenant@housing.local\",\n  \"password\": \"Tenant1234!\"\n}",
+              "raw": "{\n  \"status\": \"AVAILABLE\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
-            }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/rooms/seed-room-1/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rooms",
+                "seed-room-1",
+                "status"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Required before step 6. Creating a booking flips the room to RESERVED, so without this reset the second run of the walkthrough fails with 400 'Room is not available for booking'."
           },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const body = pm.response.json();",
-                  "if (body?.data?.accessToken) pm.collectionVariables.set('tenantToken', body.data.accessToken);"
-                ]
-              }
-            }
-          ]
+          "response": []
         },
         {
-          "name": "6. Create a booking with live room data",
+          "name": "6. Create a booking (tenant)",
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              },
               {
                 "key": "Content-Type",
                 "value": "application/json",
                 "type": "text"
               }
             ],
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{tenantToken}}",
-                  "type": "string"
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomId\": \"seed-room-1\",\n  \"startDate\": \"{{bookingStartDate}}\",\n  \"endDate\": \"{{bookingEndDate}}\",\n  \"message\": \"Walkthrough booking.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
                 }
-              ]
+              }
             },
             "url": {
               "raw": "{{baseUrl}}/bookings",
@@ -499,41 +438,6 @@
                 "bookings"
               ]
             },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"roomId\": \"seed-room-1\",\n  \"startDate\": \"2026-11-10\",\n  \"endDate\": \"2026-12-10\",\n  \"message\": \"Demo booking created from the Postman walkthrough\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const body = pm.response.json();",
-                  "if (body?.data?.id) pm.collectionVariables.set('bookingId', body.data.id);"
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "7. View the created booking",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -544,16 +448,173 @@
                 }
               ]
             },
+            "description": "Stores bookingId for the steps that follow."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d = pm.response.json().data || {};",
+                  "if (d.id) pm.collectionVariables.set('bookingId', d.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "7. Approve the booking (owner)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
-              "raw": "{{baseUrl}}/bookings/{{bookingId}}",
+              "raw": "{{baseUrl}}/bookings/{{bookingId}}/approve",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "bookings",
-                "{{bookingId}}"
+                "{{bookingId}}",
+                "approve"
               ]
-            }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Runs in a single transaction: booking becomes APPROVED, the room becomes OCCUPIED and a Stripe PaymentIntent is created."
+          },
+          "response": []
+        },
+        {
+          "name": "8. Stripe checkout session (tenant)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bookings/{{bookingId}}/checkout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bookings",
+                "{{bookingId}}",
+                "checkout"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Returns a hosted checkoutUrl. Open it in the browser and pay with card 4242 4242 4242 4242 (no expiry or CVC needed). The webhook then flips the payment to SUCCEEDED."
+          },
+          "response": []
+        },
+        {
+          "name": "9. RBAC proof: /admin/stats as OWNER (expect 403)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "stats"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Same endpoint returns 200 with the admin token and 403 here. That contrast is the RBAC proof."
+          },
+          "response": []
+        },
+        {
+          "name": "10. RBAC proof: /admin/stats as ADMIN (expect 200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "stats"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Platform statistics: users, listings, occupancy, booking funnel, revenue, engagement, top properties."
+          },
+          "response": []
+        },
+        {
+          "name": "11. Health: storage driver and cache backend",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Reports storage=cloudinary and cache=redis when both are configured."
           },
           "response": []
         }
@@ -569,11 +630,6 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{tenantToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
@@ -585,7 +641,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth/register/tenant",
+              "raw": "{{baseUrl}}/auth}}/register}}/tenant}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -595,9 +651,12 @@
                 "tenant"
               ]
             },
+            "auth": {
+              "type": "noauth"
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"{{name}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"phone\": \"{{phone}}\"\n}",
+              "raw": "{\n  \"name\": \"Demo Tenant\",\n  \"email\": \"new.tenant@housing.local\",\n  \"password\": \"Tenant1234!\",\n  \"phone\": \"+15555550111\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -605,35 +664,13 @@
               }
             }
           },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const body = pm.response.json();",
-                  "if (body && body.data && body.data.accessToken) {",
-                  "  pm.collectionVariables.set('accessToken', body.data.accessToken);",
-                  "}",
-                  "if (body && body.data && body.data.refreshToken) {",
-                  "  pm.collectionVariables.set('refreshToken', body.data.refreshToken);",
-                  "}"
-                ]
-              }
-            }
-          ]
+          "response": []
         },
         {
           "name": "Register an owner",
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
               {
                 "key": "Accept",
                 "value": "application/json",
@@ -646,7 +683,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth/register/owner",
+              "raw": "{{baseUrl}}/auth}}/register}}/owner}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -656,9 +693,12 @@
                 "owner"
               ]
             },
+            "auth": {
+              "type": "noauth"
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"{{name}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"phone\": \"{{phone}}\"\n}",
+              "raw": "{\n  \"name\": \"Demo Owner\",\n  \"email\": \"new.owner@housing.local\",\n  \"password\": \"Owner1234!\",\n  \"phone\": \"+15555550112\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -666,35 +706,13 @@
               }
             }
           },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "type": "text/javascript",
-                "exec": [
-                  "const body = pm.response.json();",
-                  "if (body && body.data && body.data.accessToken) {",
-                  "  pm.collectionVariables.set('accessToken', body.data.accessToken);",
-                  "}",
-                  "if (body && body.data && body.data.refreshToken) {",
-                  "  pm.collectionVariables.set('refreshToken', body.data.refreshToken);",
-                  "}"
-                ]
-              }
-            }
-          ]
+          "response": []
         },
         {
           "name": "Email/password login",
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
               {
                 "key": "Accept",
                 "value": "application/json",
@@ -707,7 +725,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth/login",
+              "raw": "{{baseUrl}}/auth}}/login}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -716,9 +734,12 @@
                 "login"
               ]
             },
+            "auth": {
+              "type": "noauth"
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -734,12 +755,20 @@
                 "type": "text/javascript",
                 "exec": [
                   "const body = pm.response.json();",
-                  "if (body && body.data && body.data.accessToken) {",
-                  "  pm.collectionVariables.set('accessToken', body.data.accessToken);",
+                  "const d = body && body.data;",
+                  "if (d && d.accessToken) {",
+                  "  pm.collectionVariables.set('accessToken', d.accessToken);",
+                  "  const email = (pm.request.body.raw ? JSON.parse(pm.request.body.raw).email : '');",
+                  "  if (email.indexOf('admin') !== -1) {",
+                  "    pm.collectionVariables.set('adminToken', d.accessToken);",
+                  "  } else if (email.indexOf('owner') !== -1) {",
+                  "    pm.collectionVariables.set('ownerToken', d.accessToken);",
+                  "  } else {",
+                  "    pm.collectionVariables.set('tenantToken', d.accessToken);",
+                  "  }",
                   "}",
-                  "if (body && body.data && body.data.refreshToken) {",
-                  "  pm.collectionVariables.set('refreshToken', body.data.refreshToken);",
-                  "}"
+                  "if (d && d.refreshToken) pm.collectionVariables.set('refreshToken', d.refreshToken);",
+                  "if (d && d.user && d.user.id) pm.collectionVariables.set('currentUserId', d.user.id);"
                 ]
               }
             }
@@ -751,11 +780,6 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
@@ -767,7 +791,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth/refresh",
+              "raw": "{{baseUrl}}/auth}}/refresh}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -775,6 +799,9 @@
                 "auth",
                 "refresh"
               ]
+            },
+            "auth": {
+              "type": "noauth"
             },
             "body": {
               "mode": "raw",
@@ -793,13 +820,9 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "const body = pm.response.json();",
-                  "if (body && body.data && body.data.accessToken) {",
-                  "  pm.collectionVariables.set('accessToken', body.data.accessToken);",
-                  "}",
-                  "if (body && body.data && body.data.refreshToken) {",
-                  "  pm.collectionVariables.set('refreshToken', body.data.refreshToken);",
-                  "}"
+                  "const d = pm.response.json().data || {};",
+                  "if (d.accessToken) pm.collectionVariables.set('accessToken', d.accessToken);",
+                  "if (d.refreshToken) pm.collectionVariables.set('refreshToken', d.refreshToken);"
                 ]
               }
             }
@@ -811,18 +834,13 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth/logout",
+              "raw": "{{baseUrl}}/auth}}/logout}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -830,6 +848,9 @@
                 "auth",
                 "logout"
               ]
+            },
+            "auth": {
+              "type": "noauth"
             }
           },
           "response": []
@@ -840,24 +861,29 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth/me",
+              "raw": "{{baseUrl}}/auth}}/me}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "auth",
                 "me"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -868,11 +894,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
               {
                 "key": "Accept",
                 "value": "application/json",
@@ -885,7 +906,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth/google",
+              "raw": "{{baseUrl}}/auth}}/google}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -894,9 +915,12 @@
                 "google"
               ]
             },
+            "auth": {
+              "type": "noauth"
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"idToken\": \"{{idToken}}\"\n}",
+              "raw": "{\n  \"idToken\": \"paste-a-google-id-token-here\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -912,11 +936,6 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
@@ -928,7 +947,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth/verify/resend",
+              "raw": "{{baseUrl}}/auth}}/verify}}/resend}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -938,9 +957,12 @@
                 "resend"
               ]
             },
+            "auth": {
+              "type": "noauth"
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"{{email}}\"\n}",
+              "raw": "{\n  \"email\": \"{{tenantEmail}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -956,11 +978,6 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
@@ -972,7 +989,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth/verify",
+              "raw": "{{baseUrl}}/auth}}/verify}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -981,9 +998,12 @@
                 "verify"
               ]
             },
+            "auth": {
+              "type": "noauth"
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"token\": \"{{token}}\"\n}",
+              "raw": "{\n  \"token\": \"paste-the-verification-token-from-the-email\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -999,11 +1019,6 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
@@ -1015,7 +1030,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth/password/forgot",
+              "raw": "{{baseUrl}}/auth}}/password}}/forgot}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1025,9 +1040,12 @@
                 "forgot"
               ]
             },
+            "auth": {
+              "type": "noauth"
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"{{email}}\"\n}",
+              "raw": "{\n  \"email\": \"{{tenantEmail}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1043,11 +1061,6 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
@@ -1059,7 +1072,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth/password/reset",
+              "raw": "{{baseUrl}}/auth}}/password}}/reset}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1069,9 +1082,12 @@
                 "reset"
               ]
             },
+            "auth": {
+              "type": "noauth"
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"token\": \"{{token}}\",\n  \"password\": \"{{password}}\"\n}",
+              "raw": "{\n  \"token\": \"paste-the-reset-token\",\n  \"password\": \"Tenant12345!\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1087,18 +1103,18 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
+                "key": "Accept",
+                "value": "application/json",
                 "type": "text"
               },
               {
-                "key": "Accept",
+                "key": "Content-Type",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth/password/change",
+              "raw": "{{baseUrl}}/auth}}/password}}/change}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1108,9 +1124,19 @@
                 "change"
               ]
             },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"currentPassword\": \"Tenant1234!\",\n  \"newPassword\": \"Tenant12345!\"\n}",
+              "raw": "{\n  \"currentPassword\": \"{{tenantPassword}}\",\n  \"newPassword\": \"Tenant12345!\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1132,27 +1158,44 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users",
+              "raw": "{{baseUrl}}/users}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "users"
               ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
             }
           },
-          "response": []
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const rows = pm.response.json().data || [];",
+                  "if (rows.length) pm.collectionVariables.set('userId', rows[0].id);"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Get a user (admin)",
@@ -1160,24 +1203,29 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users/{{id}}",
+              "raw": "{{baseUrl}}/users}}/:userId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "users",
-                "{{id}}"
+                ":userId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -1189,24 +1237,34 @@
             "method": "PATCH",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
+                "key": "Accept",
+                "value": "application/json",
                 "type": "text"
               },
               {
-                "key": "Accept",
+                "key": "Content-Type",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users/{{id}}",
+              "raw": "{{baseUrl}}/users}}/:userId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "users",
-                "{{id}}"
+                ":userId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
               ]
             },
             "body": {
@@ -1227,24 +1285,29 @@
             "method": "DELETE",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users/{{id}}",
+              "raw": "{{baseUrl}}/users}}/:userId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "users",
-                "{{id}}"
+                ":userId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -1255,11 +1318,6 @@
           "request": {
             "method": "PATCH",
             "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
               {
                 "key": "Accept",
                 "value": "application/json",
@@ -1272,14 +1330,24 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users/{{id}}/role",
+              "raw": "{{baseUrl}}/users}}/:userId/role}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "users",
-                "{{id}}",
+                ":userId",
                 "role"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
               ]
             },
             "body": {
@@ -1300,11 +1368,6 @@
             "method": "PATCH",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
@@ -1316,19 +1379,29 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users/{{id}}/password",
+              "raw": "{{baseUrl}}/users}}/:userId/password}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "users",
-                "{{id}}",
+                ":userId",
                 "password"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
               ]
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"password\": \"{{password}}\"\n}",
+              "raw": "{\n  \"password\": \"Reset1234!\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1344,25 +1417,30 @@
             "method": "PATCH",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users/{{id}}/restore",
+              "raw": "{{baseUrl}}/users}}/:userId/restore}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "users",
-                "{{id}}",
+                ":userId",
                 "restore"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -1380,18 +1458,13 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties?status=PUBLISHED&city=Metropolis&search=Downtown&page=1",
+              "raw": "{{baseUrl}}/properties}}?status=&city=&search=&ownerId=&page=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1401,34 +1474,48 @@
               "query": [
                 {
                   "key": "status",
-                  "value": "PUBLISHED",
+                  "value": "",
                   "description": ""
                 },
                 {
                   "key": "city",
-                  "value": "Metropolis",
+                  "value": "",
                   "description": ""
                 },
                 {
                   "key": "search",
-                  "value": "Downtown",
+                  "value": "",
                   "description": ""
                 },
                 {
                   "key": "ownerId",
                   "value": "",
-                  "disabled": true,
                   "description": ""
                 },
                 {
                   "key": "page",
-                  "value": "1",
+                  "value": "",
                   "description": ""
                 }
               ]
+            },
+            "auth": {
+              "type": "noauth"
             }
           },
-          "response": []
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const rows = pm.response.json().data || [];",
+                  "if (rows.length) pm.collectionVariables.set('propertyId', rows[0].id);"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Create a property (owner)",
@@ -1436,18 +1523,18 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
+                "key": "Accept",
+                "value": "application/json",
                 "type": "text"
               },
               {
-                "key": "Accept",
+                "key": "Content-Type",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties",
+              "raw": "{{baseUrl}}/properties}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1455,9 +1542,19 @@
                 "properties"
               ]
             },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Demo Roommate Property\",\n  \"description\": \"A comfortable property for the API walkthrough.\",\n  \"address\": \"123 Demo Street\",\n  \"city\": \"Metropolis\",\n  \"state\": \"NY\",\n  \"postalCode\": \"10001\",\n  \"country\": \"US\",\n  \"status\": \"PUBLISHED\"\n}",
+              "raw": "{\n  \"title\": \"Demo Roommate Property\",\n  \"description\": \"A comfortable property created through the Postman walkthrough.\",\n  \"address\": \"123 Demo Street\",\n  \"city\": \"Metropolis\",\n  \"state\": \"NY\",\n  \"postalCode\": \"10001\",\n  \"country\": \"US\",\n  \"status\": \"PUBLISHED\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1472,10 +1569,8 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "const body = pm.response.json();",
-                  "if (body && body.data && body.data.id) {",
-                  "  pm.collectionVariables.set('propertyId', body.data.id);",
-                  "}"
+                  "const d = pm.response.json().data || {};",
+                  "if (d.id) pm.collectionVariables.set('propertyId', d.id);"
                 ]
               }
             }
@@ -1487,25 +1582,23 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties/{{id}}",
+              "raw": "{{baseUrl}}/properties}}/:propertyId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "properties",
-                "{{id}}"
+                ":propertyId"
               ]
+            },
+            "auth": {
+              "type": "noauth"
             }
           },
           "response": []
@@ -1516,29 +1609,39 @@
             "method": "PATCH",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
+                "key": "Accept",
+                "value": "application/json",
                 "type": "text"
               },
               {
-                "key": "Accept",
+                "key": "Content-Type",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties/{{id}}",
+              "raw": "{{baseUrl}}/properties}}/:propertyId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "properties",
-                "{{id}}"
+                ":propertyId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
               ]
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Updated Demo Property\"\n}",
+              "raw": "{\n  \"description\": \"Updated through Postman.\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1554,24 +1657,29 @@
             "method": "DELETE",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties/{{id}}",
+              "raw": "{{baseUrl}}/properties}}/:propertyId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "properties",
-                "{{id}}"
+                ":propertyId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -1582,11 +1690,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
               {
                 "key": "Accept",
                 "value": "application/json",
@@ -1599,14 +1702,24 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties/{{id}}/amenities",
+              "raw": "{{baseUrl}}/properties}}/:propertyId/amenities}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "properties",
-                "{{id}}",
+                ":propertyId",
                 "amenities"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
               ]
             },
             "body": {
@@ -1627,26 +1740,31 @@
             "method": "DELETE",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties/{{id}}/amenities/{{amenityId}}",
+              "raw": "{{baseUrl}}/properties}}/:propertyId/amenities}}/:amenityId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "properties",
-                "{{id}}",
+                ":propertyId",
                 "amenities",
-                "{{amenityId}}"
+                ":amenityId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -1658,26 +1776,24 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties/{{propertyId}}/rooms",
+              "raw": "{{baseUrl}}/properties}}/:propertyId/rooms}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "properties",
-                "{{propertyId}}",
+                ":propertyId",
                 "rooms"
               ]
+            },
+            "auth": {
+              "type": "noauth"
             }
           },
           "response": []
@@ -1688,30 +1804,40 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
+                "key": "Accept",
+                "value": "application/json",
                 "type": "text"
               },
               {
-                "key": "Accept",
+                "key": "Content-Type",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties/{{propertyId}}/rooms",
+              "raw": "{{baseUrl}}/properties}}/:propertyId/rooms}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "properties",
-                "{{propertyId}}",
+                ":propertyId",
                 "rooms"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
               ]
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Demo Room\",\n  \"description\": \"A bright furnished room for the walkthrough.\",\n  \"area\": 24,\n  \"rent\": 1200,\n  \"currency\": \"usd\",\n  \"deposit\": 600,\n  \"bedrooms\": 1,\n  \"bathrooms\": 1,\n  \"facing\": \"EAST\",\n  \"availableFrom\": \"2026-11-01\",\n  \"status\": \"AVAILABLE\"\n}",
+              "raw": "{\n  \"title\": \"Demo Room\",\n  \"description\": \"A bright furnished room for the walkthrough.\",\n  \"area\": 24,\n  \"rent\": 1200,\n  \"currency\": \"usd\",\n  \"deposit\": 600,\n  \"bedrooms\": 1,\n  \"bathrooms\": 1,\n  \"facing\": \"EAST\",\n  \"status\": \"AVAILABLE\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1726,10 +1852,8 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "const body = pm.response.json();",
-                  "if (body && body.data && body.data.id) {",
-                  "  pm.collectionVariables.set('roomId', body.data.id);",
-                  "}"
+                  "const d = pm.response.json().data || {};",
+                  "if (d.id) pm.collectionVariables.set('roomId', d.id);"
                 ]
               }
             }
@@ -1747,18 +1871,13 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/rooms?status=AVAILABLE&minRent=0&maxRent=5000&facing=EAST&minBedrooms=1&availableFrom=2026-11-01",
+              "raw": "{{baseUrl}}/rooms}}?status=&minRent=&maxRent=&facing=&minBedrooms=&availableFrom=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1768,38 +1887,56 @@
               "query": [
                 {
                   "key": "status",
-                  "value": "AVAILABLE",
+                  "value": "",
                   "description": ""
                 },
                 {
                   "key": "minRent",
-                  "value": "0",
+                  "value": "",
                   "description": ""
                 },
                 {
                   "key": "maxRent",
-                  "value": "5000",
+                  "value": "",
                   "description": ""
                 },
                 {
                   "key": "facing",
-                  "value": "EAST",
+                  "value": "",
                   "description": ""
                 },
                 {
                   "key": "minBedrooms",
-                  "value": "1",
+                  "value": "",
                   "description": ""
                 },
                 {
                   "key": "availableFrom",
-                  "value": "2026-11-01",
+                  "value": "",
                   "description": ""
                 }
               ]
+            },
+            "auth": {
+              "type": "noauth"
             }
           },
-          "response": []
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const rows = pm.response.json().data || [];",
+                  "if (rows.length) {",
+                  "  pm.collectionVariables.set('roomId', rows[0].id);",
+                  "  if (rows[0].property && rows[0].property.ownerId) pm.collectionVariables.set('ownerUserId', rows[0].property.ownerId);",
+                  "}"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Get a room",
@@ -1807,25 +1944,23 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/rooms/{{id}}",
+              "raw": "{{baseUrl}}/rooms}}/:roomId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "rooms",
-                "{{id}}"
+                ":roomId"
               ]
+            },
+            "auth": {
+              "type": "noauth"
             }
           },
           "response": []
@@ -1835,99 +1970,6 @@
           "request": {
             "method": "PATCH",
             "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/rooms/{{id}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "rooms",
-                "{{id}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Delete a room (owner/admin)",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/rooms/{{id}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "rooms",
-                "{{id}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Room occupancy (bookings)",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/rooms/{{id}}/occupancy",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "rooms",
-                "{{id}}",
-                "occupancy"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update room status (owner/admin)",
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
               {
                 "key": "Accept",
                 "value": "application/json",
@@ -1940,14 +1982,134 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/rooms/{{id}}/status",
+              "raw": "{{baseUrl}}/rooms}}/:roomId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "rooms",
-                "{{id}}",
+                ":roomId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rent\": 1350\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete a room (owner/admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/rooms}}/:roomId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rooms",
+                ":roomId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Room occupancy (bookings)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/rooms}}/:roomId/occupancy}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rooms",
+                ":roomId",
+                "occupancy"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update room status (owner/admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/rooms}}/:roomId/status}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "rooms",
+                ":roomId",
                 "status"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
               ]
             },
             "body": {
@@ -1958,7 +2120,8 @@
                   "language": "json"
                 }
               }
-            }
+            },
+            "description": "Send this before Create a booking. Creating a booking flips the room to RESERVED, so this resets it and makes the walkthrough repeatable."
           },
           "response": []
         }
@@ -1974,18 +2137,13 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/amenities?search=Wifi",
+              "raw": "{{baseUrl}}/amenities}}?search=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1995,13 +2153,28 @@
               "query": [
                 {
                   "key": "search",
-                  "value": "Wifi",
+                  "value": "",
                   "description": ""
                 }
               ]
+            },
+            "auth": {
+              "type": "noauth"
             }
           },
-          "response": []
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const rows = pm.response.json().data || [];",
+                  "if (rows.length) pm.collectionVariables.set('amenityId', rows[0].id);"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Create an amenity (admin)",
@@ -2009,23 +2182,33 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
+                "key": "Accept",
+                "value": "application/json",
                 "type": "text"
               },
               {
-                "key": "Accept",
+                "key": "Content-Type",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/amenities",
+              "raw": "{{baseUrl}}/amenities}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "amenities"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
               ]
             },
             "body": {
@@ -2038,7 +2221,19 @@
               }
             }
           },
-          "response": []
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d = pm.response.json().data || {};",
+                  "if (d.id) pm.collectionVariables.set('amenityId', d.id);"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Delete an amenity (admin)",
@@ -2046,24 +2241,29 @@
             "method": "DELETE",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/amenities/{{id}}",
+              "raw": "{{baseUrl}}/amenities}}/:amenityId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "amenities",
-                "{{id}}"
+                ":amenityId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -2081,18 +2281,13 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings?status=APPROVED&tenantId=&propertyId=seed-property-1",
+              "raw": "{{baseUrl}}/bookings}}?status=&tenantId=&propertyId=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2102,19 +2297,28 @@
               "query": [
                 {
                   "key": "status",
-                  "value": "APPROVED",
+                  "value": "",
                   "description": ""
                 },
                 {
                   "key": "tenantId",
                   "value": "",
-                  "disabled": true,
                   "description": ""
                 },
                 {
                   "key": "propertyId",
-                  "value": "seed-property-1",
+                  "value": "",
                   "description": ""
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
                 }
               ]
             }
@@ -2127,11 +2331,6 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{tenantToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
@@ -2143,7 +2342,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings",
+              "raw": "{{baseUrl}}/bookings}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2151,9 +2350,19 @@
                 "bookings"
               ]
             },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"roomId\": \"{{roomId}}\",\n  \"startDate\": \"{{startDate}}\",\n  \"endDate\": \"{{endDate}}\",\n  \"message\": \"{{message}}\"\n}",
+              "raw": "{\n  \"roomId\": \"{{roomId}}\",\n  \"startDate\": \"{{bookingStartDate}}\",\n  \"endDate\": \"{{bookingEndDate}}\",\n  \"message\": \"Booking created from the Postman walkthrough.\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2168,10 +2377,8 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "const body = pm.response.json();",
-                  "if (body && body.data && body.data.id) {",
-                  "  pm.collectionVariables.set('bookingId', body.data.id);",
-                  "}"
+                  "const d = pm.response.json().data || {};",
+                  "if (d.id) pm.collectionVariables.set('bookingId', d.id);"
                 ]
               }
             }
@@ -2183,24 +2390,29 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings/{{id}}",
+              "raw": "{{baseUrl}}/bookings}}/:bookingId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "bookings",
-                "{{id}}"
+                ":bookingId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -2212,24 +2424,29 @@
             "method": "DELETE",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings/{{id}}",
+              "raw": "{{baseUrl}}/bookings}}/:bookingId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "bookings",
-                "{{id}}"
+                ":bookingId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -2241,29 +2458,46 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{tenantToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings/{{id}}/payments",
+              "raw": "{{baseUrl}}/bookings}}/:bookingId/payments}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "bookings",
-                "{{id}}",
+                ":bookingId",
                 "payments"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
-          "response": []
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const rows = pm.response.json().data || [];",
+                  "if (rows.length) pm.collectionVariables.set('paymentId', rows[0].id);"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Create a checkout session for a booking",
@@ -2271,27 +2505,33 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{tenantToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings/{{bookingId}}/checkout",
+              "raw": "{{baseUrl}}/bookings}}/:bookingId/checkout}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "bookings",
-                "{{bookingId}}",
+                ":bookingId",
                 "checkout"
               ]
-            }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "Returns a hosted Stripe checkoutUrl. Open it and pay with card 4242 4242 4242 4242 (no expiry or CVC needed); the webhook then flips the payment to SUCCEEDED."
           },
           "response": []
         },
@@ -2301,25 +2541,35 @@
             "method": "PATCH",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{ownerToken}}",
+                "key": "Accept",
+                "value": "application/json",
                 "type": "text"
               },
               {
-                "key": "Accept",
+                "key": "Content-Type",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings/{{bookingId}}/approve",
+              "raw": "{{baseUrl}}/bookings}}/:bookingId/approve}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "bookings",
-                "{{bookingId}}",
+                ":bookingId",
                 "approve"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
               ]
             },
             "body": {
@@ -2340,26 +2590,45 @@
             "method": "PATCH",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
+                "key": "Accept",
+                "value": "application/json",
                 "type": "text"
               },
               {
-                "key": "Accept",
+                "key": "Content-Type",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings/{{id}}/reject",
+              "raw": "{{baseUrl}}/bookings}}/:bookingId/reject}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "bookings",
-                "{{id}}",
+                ":bookingId",
                 "reject"
               ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Not available for those dates.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
           },
           "response": []
@@ -2369,11 +2638,6 @@
           "request": {
             "method": "PATCH",
             "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
               {
                 "key": "Accept",
                 "value": "application/json",
@@ -2386,19 +2650,29 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings/{{id}}/cancel",
+              "raw": "{{baseUrl}}/bookings}}/:bookingId/cancel}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "bookings",
-                "{{id}}",
+                ":bookingId",
                 "cancel"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
               ]
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"reason\": \"{{reason}}\"\n}",
+              "raw": "{\n  \"reason\": \"Cancelled from the walkthrough.\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2414,24 +2688,29 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings/mine",
+              "raw": "{{baseUrl}}/bookings}}/mine}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "bookings",
                 "mine"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -2449,18 +2728,13 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{adminToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/payments?status=SUCCEEDED&provider=STRIPE&bookingId=seed-booking-1&tenantId=",
+              "raw": "{{baseUrl}}/payments}}?status=&provider=&bookingId=&tenantId=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2470,24 +2744,33 @@
               "query": [
                 {
                   "key": "status",
-                  "value": "SUCCEEDED",
+                  "value": "",
                   "description": ""
                 },
                 {
                   "key": "provider",
-                  "value": "STRIPE",
+                  "value": "",
                   "description": ""
                 },
                 {
                   "key": "bookingId",
-                  "value": "seed-booking-1",
+                  "value": "",
                   "description": ""
                 },
                 {
                   "key": "tenantId",
                   "value": "",
-                  "disabled": true,
                   "description": ""
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
                 }
               ]
             }
@@ -2500,24 +2783,29 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{tenantToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/payments/{{id}}",
+              "raw": "{{baseUrl}}/payments}}/:paymentId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "payments",
-                "{{id}}"
+                ":paymentId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -2528,11 +2816,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{adminToken}}",
-                "type": "text"
-              },
               {
                 "key": "Accept",
                 "value": "application/json",
@@ -2545,19 +2828,29 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/payments/{{id}}/refund",
+              "raw": "{{baseUrl}}/payments}}/:paymentId/refund}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "payments",
-                "{{id}}",
+                ":paymentId",
                 "refund"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
               ]
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"amount\": 0\n}",
+              "raw": "{\n  \"amount\": 100,\n  \"reason\": \"Demo partial refund\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2579,18 +2872,13 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/stripe/webhook",
+              "raw": "{{baseUrl}}/stripe}}/webhook}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2614,18 +2902,13 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/reviews?subject=PROPERTY&reviewableId=seed-property-1&page=1&pageSize=20",
+              "raw": "{{baseUrl}}/reviews}}?subject=&reviewableId=&authorId=&minRating=&maxRating=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2635,30 +2918,33 @@
               "query": [
                 {
                   "key": "subject",
-                  "value": "PROPERTY",
+                  "value": "",
                   "description": ""
                 },
                 {
                   "key": "reviewableId",
-                  "value": "seed-property-1",
+                  "value": "",
                   "description": ""
                 },
                 {
-                  "key": "page",
-                  "value": "1",
+                  "key": "authorId",
+                  "value": "",
                   "description": ""
                 },
                 {
-                  "key": "pageSize",
-                  "value": "20",
+                  "key": "minRating",
+                  "value": "",
                   "description": ""
                 },
                 {
-                  "key": "sortBy",
-                  "value": "createdAt",
+                  "key": "maxRating",
+                  "value": "",
                   "description": ""
                 }
               ]
+            },
+            "auth": {
+              "type": "noauth"
             }
           },
           "response": []
@@ -2668,11 +2954,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{tenantToken}}",
-                "type": "text"
-              },
               {
                 "key": "Accept",
                 "value": "application/json",
@@ -2685,7 +2966,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/reviews",
+              "raw": "{{baseUrl}}/reviews}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2693,9 +2974,19 @@
                 "reviews"
               ]
             },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"subject\": \"PROPERTY\",\n  \"reviewableId\": \"seed-property-1\",\n  \"bookingId\": \"{{bookingId}}\",\n  \"rating\": 5,\n  \"comment\": \"Nice place\"\n}",
+              "raw": "{\n  \"subject\": \"ROOM\",\n  \"reviewableId\": \"{{roomId}}\",\n  \"bookingId\": \"{{bookingId}}\",\n  \"rating\": 5,\n  \"comment\": \"Great place to live.\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2703,7 +2994,19 @@
               }
             }
           },
-          "response": []
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d = pm.response.json().data || {};",
+                  "if (d.id) pm.collectionVariables.set('reviewId', d.id);"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Get a review",
@@ -2711,25 +3014,23 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/reviews/{{id}}",
+              "raw": "{{baseUrl}}/reviews}}/:reviewId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "reviews",
-                "{{id}}"
+                ":reviewId"
               ]
+            },
+            "auth": {
+              "type": "noauth"
             }
           },
           "response": []
@@ -2740,24 +3041,29 @@
             "method": "DELETE",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/reviews/{{id}}",
+              "raw": "{{baseUrl}}/reviews}}/:reviewId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "reviews",
-                "{{id}}"
+                ":reviewId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -2775,23 +3081,28 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/favorites",
+              "raw": "{{baseUrl}}/favorites}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "favorites"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -2802,11 +3113,6 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
               {
                 "key": "Accept",
                 "value": "application/json",
@@ -2819,12 +3125,22 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/favorites",
+              "raw": "{{baseUrl}}/favorites}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "favorites"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
               ]
             },
             "body": {
@@ -2837,7 +3153,19 @@
               }
             }
           },
-          "response": []
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d = pm.response.json().data || {};",
+                  "if (d.id) pm.collectionVariables.set('favoriteId', d.id);"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Delete a favorite",
@@ -2845,24 +3173,29 @@
             "method": "DELETE",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/favorites/{{id}}",
+              "raw": "{{baseUrl}}/favorites}}/:favoriteId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "favorites",
-                "{{id}}"
+                ":favoriteId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -2874,25 +3207,30 @@
             "method": "DELETE",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/favorites/property/{{propertyId}}",
+              "raw": "{{baseUrl}}/favorites}}/property}}/:propertyId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "favorites",
                 "property",
-                "{{propertyId}}"
+                ":propertyId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -2910,18 +3248,13 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/messages?folder=inbox&read=false&page=1&pageSize=20",
+              "raw": "{{baseUrl}}/messages}}?folder=&read=&propertyId=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2931,19 +3264,28 @@
               "query": [
                 {
                   "key": "folder",
-                  "value": "inbox",
+                  "value": "",
                   "description": ""
                 },
                 {
                   "key": "read",
-                  "value": "false",
+                  "value": "",
                   "description": ""
                 },
                 {
                   "key": "propertyId",
                   "value": "",
-                  "disabled": true,
                   "description": ""
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
                 }
               ]
             }
@@ -2956,11 +3298,6 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
@@ -2972,7 +3309,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/messages",
+              "raw": "{{baseUrl}}/messages}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2980,9 +3317,19 @@
                 "messages"
               ]
             },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
+              ]
+            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"recipientId\": \"{{recipientId}}\",\n  \"subject\": \"{{subject}}\",\n  \"body\": \"{{body}}\",\n  \"propertyId\": \"{{propertyId}}\"\n}",
+              "raw": "{\n  \"recipientId\": \"{{ownerUserId}}\",\n  \"subject\": \"Is the room still available?\",\n  \"body\": \"Hello, I am interested in the room.\",\n  \"propertyId\": \"{{propertyId}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2990,7 +3337,19 @@
               }
             }
           },
-          "response": []
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d = pm.response.json().data || {};",
+                  "if (d.id) pm.collectionVariables.set('messageId', d.id);"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Conversation thread",
@@ -2998,25 +3357,30 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/messages/conversation/{{otherUserId}}",
+              "raw": "{{baseUrl}}/messages}}/conversation}}/:ownerUserId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "messages",
                 "conversation",
-                "{{otherUserId}}"
+                ":ownerUserId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -3028,24 +3392,29 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/messages/{{id}}",
+              "raw": "{{baseUrl}}/messages}}/:messageId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "messages",
-                "{{id}}"
+                ":messageId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -3057,24 +3426,29 @@
             "method": "DELETE",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/messages/{{id}}",
+              "raw": "{{baseUrl}}/messages}}/:messageId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "messages",
-                "{{id}}"
+                ":messageId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -3086,25 +3460,30 @@
             "method": "PATCH",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/messages/{{id}}/read",
+              "raw": "{{baseUrl}}/messages}}/:messageId/read}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "messages",
-                "{{id}}",
+                ":messageId",
                 "read"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -3122,18 +3501,13 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/audit/logs?action=REVIEW_CREATED&entityType=review&page=1&pageSize=20",
+              "raw": "{{baseUrl}}/audit}}/logs}}?action=&entityType=&actorId=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3144,24 +3518,45 @@
               "query": [
                 {
                   "key": "action",
-                  "value": "REVIEW_CREATED",
+                  "value": "",
                   "description": ""
                 },
                 {
                   "key": "entityType",
-                  "value": "review",
+                  "value": "",
                   "description": ""
                 },
                 {
                   "key": "actorId",
                   "value": "",
-                  "disabled": true,
                   "description": ""
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
                 }
               ]
             }
           },
-          "response": []
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const rows = pm.response.json().data || [];",
+                  "if (rows.length) pm.collectionVariables.set('auditLogId', rows[0].id);"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Get an audit log (admin)",
@@ -3169,25 +3564,30 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/audit/logs/{{id}}",
+              "raw": "{{baseUrl}}/audit}}/logs}}/:auditLogId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "audit",
                 "logs",
-                "{{id}}"
+                ":auditLogId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -3205,18 +3605,13 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/health",
+              "raw": "{{baseUrl}}/health}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3233,18 +3628,13 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/health/live",
+              "raw": "{{baseUrl}}/health}}/live}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3262,18 +3652,13 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/health/ready",
+              "raw": "{{baseUrl}}/health}}/ready}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3297,26 +3682,24 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties/{{id}}/images",
+              "raw": "{{baseUrl}}/properties}}/:propertyId/images}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "properties",
-                "{{id}}",
+                ":propertyId",
                 "images"
               ]
+            },
+            "auth": {
+              "type": "noauth"
             }
           },
           "response": []
@@ -3327,11 +3710,6 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
@@ -3343,14 +3721,24 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties/{{id}}/images",
+              "raw": "{{baseUrl}}/properties}}/:propertyId/images}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "properties",
-                "{{id}}",
+                ":propertyId",
                 "images"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
               ]
             },
             "body": {
@@ -3360,11 +3748,11 @@
                   "key": "images",
                   "type": "file",
                   "src": [],
-                  "description": "Image file(s) to upload"
+                  "description": "Any jpg, png, webp or avif file."
                 }
               ]
             },
-            "description": "Documents validation failures."
+            "description": "Form-data tab. Drop any jpg/png/webp file into the images field."
           },
           "response": []
         },
@@ -3374,26 +3762,24 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/rooms/{{id}}/images",
+              "raw": "{{baseUrl}}/rooms}}/:roomId/images}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "rooms",
-                "{{id}}",
+                ":roomId",
                 "images"
               ]
+            },
+            "auth": {
+              "type": "noauth"
             }
           },
           "response": []
@@ -3404,11 +3790,6 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
@@ -3420,14 +3801,24 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/rooms/{{id}}/images",
+              "raw": "{{baseUrl}}/rooms}}/:roomId/images}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "rooms",
-                "{{id}}",
+                ":roomId",
                 "images"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
               ]
             },
             "body": {
@@ -3437,11 +3828,10 @@
                   "key": "images",
                   "type": "file",
                   "src": [],
-                  "description": "Image file(s) to upload"
+                  "description": "Any jpg, png, webp or avif file."
                 }
               ]
-            },
-            "description": "Documents validation failures."
+            }
           },
           "response": []
         },
@@ -3451,18 +3841,13 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/images/upload-limits",
+              "raw": "{{baseUrl}}/images}}/upload-limits}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3470,6 +3855,9 @@
                 "images",
                 "upload-limits"
               ]
+            },
+            "auth": {
+              "type": "noauth"
             }
           },
           "response": []
@@ -3480,25 +3868,30 @@
             "method": "PATCH",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/images/{{id}}/primary",
+              "raw": "{{baseUrl}}/images}}/:imageId/primary}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "images",
-                "{{id}}",
+                ":imageId",
                 "primary"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -3510,24 +3903,29 @@
             "method": "DELETE",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/images/{{id}}",
+              "raw": "{{baseUrl}}/images}}/:imageId",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "images",
-                "{{id}}"
+                ":imageId"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
@@ -3545,18 +3943,13 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/admin/stats?days=30",
+              "raw": "{{baseUrl}}/admin}}/stats}}?days=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3567,13 +3960,36 @@
               "query": [
                 {
                   "key": "days",
-                  "value": "30",
+                  "value": "",
                   "description": ""
                 }
               ]
-            }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "description": "RBAC demo: send this with the owner or tenant token and it returns 403."
           },
-          "response": []
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const s = pm.response.json().data || {};",
+                  "if (s.bookings && s.bookings.recentBookingId) pm.collectionVariables.set('bookingId', s.bookings.recentBookingId);"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Owner dashboard summary",
@@ -3581,23 +3997,28 @@
             "method": "GET",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
-                "type": "text"
-              },
-              {
                 "key": "Accept",
                 "value": "application/json",
                 "type": "text"
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/dashboard",
+              "raw": "{{baseUrl}}/dashboard}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "dashboard"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ownerToken}}",
+                  "type": "string"
+                }
               ]
             }
           },
