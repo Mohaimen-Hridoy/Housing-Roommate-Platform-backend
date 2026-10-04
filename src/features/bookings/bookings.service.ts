@@ -378,13 +378,14 @@ export async function createBookingCheckout(id: string, actor: Actor) {
     return { provider: PaymentProvider.MOCK, status: payment.status, clientSecret: null, amount: payment.amount, currency: payment.currency };
   }
 
+  const returnBase = `${env.appUrl}${env.apiBaseUrl}/bookings/${booking.id}`;
   const session = await createBookingCheckoutSession({
     amount: payment.amount,
     currency: payment.currency,
     bookingId: booking.id,
     tenantId: booking.tenantId,
-    successUrl: `${env.webAppUrl}/bookings/${booking.id}/success`,
-    cancelUrl: `${env.webAppUrl}/bookings/${booking.id}`,
+    successUrl: `${returnBase}/success`,
+    cancelUrl: `${returnBase}/cancel`,
   });
   await prisma.payment.update({
     where: { id: payment.id },
@@ -395,4 +396,36 @@ export async function createBookingCheckout(id: string, actor: Actor) {
     },
   });
   return { provider: PaymentProvider.STRIPE, status: payment.status, clientSecret: null, checkoutUrl: session.url, amount: payment.amount, currency: payment.currency };
+}
+
+/**
+ * Stripe redirects the payer here after checkout. The browser holds no bearer
+ * token, so this stays public and therefore deliberately reveals nothing beyond
+ * the payment state: no amounts, no tenant, no property or room details.
+ */
+export async function getCheckoutReturnStatus(id: string, outcome: "success" | "cancel") {
+  const booking = await prisma.booking.findFirst({
+    where: { id, deletedAt: null },
+    select: { id: true, status: true, room: { select: { status: true } } },
+  });
+  if (!booking) throw new NotFoundError("Booking not found");
+
+  const payment = await prisma.payment.findFirst({
+    where: { bookingId: id },
+    orderBy: { createdAt: "desc" },
+    select: { status: true, provider: true },
+  });
+
+  return {
+    bookingId: booking.id,
+    outcome,
+    bookingStatus: booking.status,
+    roomStatus: booking.room.status,
+    paymentStatus: payment?.status ?? null,
+    paymentProvider: payment?.provider ?? null,
+    message:
+      outcome === "success"
+        ? "Payment received. The Stripe webhook marks the payment SUCCEEDED a moment later; reload if it still reads PROCESSING."
+        : "Checkout was cancelled. The booking is unchanged and no payment was taken.",
+  };
 }

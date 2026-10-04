@@ -48,4 +48,71 @@ describe("Payments", () => {
     const refund = await request(app).post(`/api/v1/payments/${paymentId}/refund`).set(authHeader(tenant.token));
     expect(refund.status).toBe(403);
   });
+
+  describe("Stripe checkout return URLs", () => {
+    async function approvedBooking(suffix: string) {
+      const owner = await makeOwner(`return-owner-${suffix}@test.local`);
+      const tenant = await makeTenant(`return-tenant-${suffix}@test.local`);
+      const propRes = await request(app)
+        .post("/api/v1/properties")
+        .set(authHeader(owner.token))
+        .send({ title: `Return ${suffix}`, address: "1 St", city: "C", status: "PUBLISHED" });
+      const roomRes = await request(app)
+        .post(`/api/v1/properties/${propRes.body.data.id}/rooms`)
+        .set(authHeader(owner.token))
+        .send({ title: "R", rent: 500, currency: "usd", status: "AVAILABLE" });
+      const bookingRes = await request(app)
+        .post("/api/v1/bookings")
+        .set(authHeader(tenant.token))
+        .send({ roomId: roomRes.body.data.id, startDate: dateOffset(5), endDate: dateOffset(35) });
+      await request(app).patch(`/api/v1/bookings/${bookingRes.body.data.id}/approve`).set(authHeader(owner.token));
+      return bookingRes.body.data.id as string;
+    }
+
+    it("return URLs point at real API routes, not a missing frontend page", async () => {
+      const bookingId = await approvedBooking("url");
+      const checkout = await prisma.payment.findFirst({ where: { bookingId }, select: { id: true } });
+      expect(checkout).not.toBeNull();
+
+      // the path Stripe redirects to must be reachable on this deployment
+      const res = await request(app).get(`/api/v1/bookings/${bookingId}/success`);
+      expect(res.status).toBe(200);
+    });
+
+    it("success page is public and reports payment state", async () => {
+      const bookingId = await approvedBooking("public");
+      const res = await request(app).get(`/api/v1/bookings/${bookingId}/success`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.bookingId).toBe(bookingId);
+      expect(res.body.data.outcome).toBe("success");
+      expect(res.body.data.bookingStatus).toBe("APPROVED");
+      expect(res.body.data.paymentStatus).not.toBeUndefined();
+    });
+
+    it("cancel page is public and says no payment was taken", async () => {
+      const bookingId = await approvedBooking("cancel");
+      const res = await request(app).get(`/api/v1/bookings/${bookingId}/cancel`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data.outcome).toBe("cancel");
+      expect(String(res.body.data.message)).toMatch(/no payment was taken/i);
+    });
+
+    it("does not leak amounts, tenant or property details", async () => {
+      const bookingId = await approvedBooking("leak");
+      const res = await request(app).get(`/api/v1/bookings/${bookingId}/success`);
+
+      const payload = JSON.stringify(res.body);
+      for (const secret of ["tenantId", "ownerId", "propertyId", "roomId", "amount", "totalAmount", "nightlyRate", "email"]) {
+        expect(payload).not.toContain(secret);
+      }
+    });
+
+    it("unknown booking returns 404", async () => {
+      const res = await request(app).get("/api/v1/bookings/does-not-exist/success");
+      expect(res.status).toBe(404);
+    });
+  });
 });

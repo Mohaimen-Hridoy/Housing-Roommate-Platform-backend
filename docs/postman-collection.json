@@ -923,7 +923,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth}}/register}}/tenant}}",
+              "raw": "{{baseUrl}}/auth/register/tenant",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -965,7 +965,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth}}/register}}/owner}}",
+              "raw": "{{baseUrl}}/auth/register/owner",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1007,7 +1007,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth}}/login}}",
+              "raw": "{{baseUrl}}/auth/login",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1073,7 +1073,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth}}/refresh}}",
+              "raw": "{{baseUrl}}/auth/refresh",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1122,7 +1122,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth}}/logout}}",
+              "raw": "{{baseUrl}}/auth/logout",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1149,7 +1149,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth}}/me}}",
+              "raw": "{{baseUrl}}/auth/me",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1188,7 +1188,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth}}/google}}",
+              "raw": "{{baseUrl}}/auth/google",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1229,7 +1229,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth}}/verify}}/resend}}",
+              "raw": "{{baseUrl}}/auth/verify/resend",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1271,7 +1271,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth}}/verify}}",
+              "raw": "{{baseUrl}}/auth/verify",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1312,7 +1312,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth}}/password}}/forgot}}",
+              "raw": "{{baseUrl}}/auth/password/forgot",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1354,7 +1354,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth}}/password}}/reset}}",
+              "raw": "{{baseUrl}}/auth/password/reset",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1396,7 +1396,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/auth}}/password}}/change}}",
+              "raw": "{{baseUrl}}/auth/password/change",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1446,7 +1446,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users}}",
+              "raw": "{{baseUrl}}/users",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1491,7 +1491,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users}}/:userId",
+              "raw": "{{baseUrl}}/users/:userId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1530,7 +1530,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users}}/:userId",
+              "raw": "{{baseUrl}}/users/:userId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1573,7 +1573,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users}}/:userId",
+              "raw": "{{baseUrl}}/users/:userId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1612,7 +1612,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users}}/:userId/role}}",
+              "raw": "{{baseUrl}}/users/:userId/role",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1661,7 +1661,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users}}/:userId/password}}",
+              "raw": "{{baseUrl}}/users/:userId/password",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1705,7 +1705,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/users}}/:userId/restore}}",
+              "raw": "{{baseUrl}}/users/:userId/restore",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1746,7 +1746,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties}}?status=&city=&search=&ownerId=&page=",
+              "raw": "{{baseUrl}}/properties?status=&city=&search=&ownerId=&page=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1816,7 +1816,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties}}",
+              "raw": "{{baseUrl}}/properties",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1870,7 +1870,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties}}/:propertyId",
+              "raw": "{{baseUrl}}/properties/:propertyId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1902,7 +1902,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties}}/:propertyId",
+              "raw": "{{baseUrl}}/properties/:propertyId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1945,7 +1945,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties}}/:propertyId",
+              "raw": "{{baseUrl}}/properties/:propertyId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -1984,7 +1984,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties}}/:propertyId/amenities}}",
+              "raw": "{{baseUrl}}/properties/:propertyId/amenities",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2028,7 +2028,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties}}/:propertyId/amenities}}/:amenityId",
+              "raw": "{{baseUrl}}/properties/:propertyId/amenities/:amenityId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2064,7 +2064,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties}}/:propertyId/rooms}}",
+              "raw": "{{baseUrl}}/properties/:propertyId/rooms",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2097,7 +2097,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties}}/:propertyId/rooms}}",
+              "raw": "{{baseUrl}}/properties/:propertyId/rooms",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2159,7 +2159,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/rooms}}?status=&minRent=&maxRent=&facing=&minBedrooms=&availableFrom=",
+              "raw": "{{baseUrl}}/rooms?status=&minRent=&maxRent=&facing=&minBedrooms=&availableFrom=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2232,7 +2232,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/rooms}}/:roomId",
+              "raw": "{{baseUrl}}/rooms/:roomId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2264,7 +2264,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/rooms}}/:roomId",
+              "raw": "{{baseUrl}}/rooms/:roomId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2307,7 +2307,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/rooms}}/:roomId",
+              "raw": "{{baseUrl}}/rooms/:roomId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2341,7 +2341,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/rooms}}/:roomId/occupancy}}",
+              "raw": "{{baseUrl}}/rooms/:roomId/occupancy",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2374,7 +2374,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/rooms}}/:roomId/status}}",
+              "raw": "{{baseUrl}}/rooms/:roomId/status",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2425,7 +2425,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/amenities}}?search=",
+              "raw": "{{baseUrl}}/amenities?search=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2475,7 +2475,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/amenities}}",
+              "raw": "{{baseUrl}}/amenities",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2529,7 +2529,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/amenities}}/:amenityId",
+              "raw": "{{baseUrl}}/amenities/:amenityId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2569,7 +2569,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings}}?status=&tenantId=&propertyId=",
+              "raw": "{{baseUrl}}/bookings?status=&tenantId=&propertyId=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2624,7 +2624,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings}}",
+              "raw": "{{baseUrl}}/bookings",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2678,7 +2678,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings}}/:bookingId",
+              "raw": "{{baseUrl}}/bookings/:bookingId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2712,7 +2712,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings}}/:bookingId",
+              "raw": "{{baseUrl}}/bookings/:bookingId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2746,7 +2746,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings}}/:bookingId/payments}}",
+              "raw": "{{baseUrl}}/bookings/:bookingId/payments",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2793,7 +2793,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings}}/:bookingId/checkout}}",
+              "raw": "{{baseUrl}}/bookings/:bookingId/checkout",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2813,7 +2813,112 @@
                 }
               ]
             },
-            "description": "Returns a hosted Stripe checkoutUrl. Open it and pay with card 4242 4242 4242 4242 (no expiry or CVC needed); the webhook then flips the payment to SUCCEEDED."
+            "description": "Returns a hosted checkoutUrl. Open it and pay with test card 4242 4242 4242 4242 (no expiry or CVC needed); the webhook then flips the payment to SUCCEEDED."
+          },
+          "response": []
+        },
+        {
+          "name": "Stripe redirect target after a successful checkout (public)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings/:bookingId/success",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bookings",
+                ":bookingId",
+                "success"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Stripe redirect target after a cancelled checkout (public)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings/:bookingId/cancel",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bookings",
+                ":bookingId",
+                "cancel"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel a booking (tenant/owner/admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/bookings/:bookingId/cancel",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "bookings",
+                ":bookingId",
+                "cancel"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tenantToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Cancelled from the walkthrough.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
           },
           "response": []
         },
@@ -2834,7 +2939,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings}}/:bookingId/approve}}",
+              "raw": "{{baseUrl}}/bookings/:bookingId/approve",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2883,7 +2988,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings}}/:bookingId/reject}}",
+              "raw": "{{baseUrl}}/bookings/:bookingId/reject",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -2916,55 +3021,6 @@
           "response": []
         },
         {
-          "name": "Cancel a booking (tenant/owner/admin)",
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json",
-                "type": "text"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/bookings}}/:bookingId/cancel}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "bookings",
-                ":bookingId",
-                "cancel"
-              ]
-            },
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{tenantToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"reason\": \"Cancelled from the walkthrough.\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
           "name": "List my bookings",
           "request": {
             "method": "GET",
@@ -2976,7 +3032,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings}}/mine}}",
+              "raw": "{{baseUrl}}/bookings/mine",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3016,7 +3072,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/payments}}?status=&provider=&bookingId=&tenantId=",
+              "raw": "{{baseUrl}}/payments?status=&provider=&bookingId=&tenantId=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3071,7 +3127,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/payments}}/:paymentId",
+              "raw": "{{baseUrl}}/payments/:paymentId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3110,7 +3166,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/payments}}/:paymentId/refund}}",
+              "raw": "{{baseUrl}}/payments/:paymentId/refund",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3160,7 +3216,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/stripe}}/webhook}}",
+              "raw": "{{baseUrl}}/stripe/webhook",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3190,7 +3246,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/reviews}}?subject=&reviewableId=&authorId=&minRating=&maxRating=",
+              "raw": "{{baseUrl}}/reviews?subject=&reviewableId=&authorId=&minRating=&maxRating=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3248,7 +3304,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/reviews}}",
+              "raw": "{{baseUrl}}/reviews",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3302,7 +3358,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/reviews}}/:reviewId",
+              "raw": "{{baseUrl}}/reviews/:reviewId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3329,7 +3385,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/reviews}}/:reviewId",
+              "raw": "{{baseUrl}}/reviews/:reviewId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3369,7 +3425,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/favorites}}",
+              "raw": "{{baseUrl}}/favorites",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3407,7 +3463,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/favorites}}",
+              "raw": "{{baseUrl}}/favorites",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3461,7 +3517,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/favorites}}/:favoriteId",
+              "raw": "{{baseUrl}}/favorites/:favoriteId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3495,7 +3551,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/favorites}}/property}}/:propertyId",
+              "raw": "{{baseUrl}}/favorites/property/:propertyId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3536,7 +3592,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/messages}}?folder=&read=&propertyId=",
+              "raw": "{{baseUrl}}/messages?folder=&read=&propertyId=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3591,7 +3647,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/messages}}",
+              "raw": "{{baseUrl}}/messages",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3645,7 +3701,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/messages}}/conversation}}/:ownerUserId",
+              "raw": "{{baseUrl}}/messages/conversation/:ownerUserId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3680,7 +3736,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/messages}}/:messageId",
+              "raw": "{{baseUrl}}/messages/:messageId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3714,7 +3770,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/messages}}/:messageId",
+              "raw": "{{baseUrl}}/messages/:messageId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3748,7 +3804,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/messages}}/:messageId/read}}",
+              "raw": "{{baseUrl}}/messages/:messageId/read",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3789,7 +3845,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/audit}}/logs}}?action=&entityType=&actorId=",
+              "raw": "{{baseUrl}}/audit/logs?action=&entityType=&actorId=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3852,7 +3908,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/audit}}/logs}}/:auditLogId",
+              "raw": "{{baseUrl}}/audit/logs/:auditLogId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3893,7 +3949,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/health}}",
+              "raw": "{{baseUrl}}/health",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3916,7 +3972,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/health}}/live}}",
+              "raw": "{{baseUrl}}/health/live",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3940,7 +3996,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/health}}/ready}}",
+              "raw": "{{baseUrl}}/health/ready",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -3970,7 +4026,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties}}/:propertyId/images}}",
+              "raw": "{{baseUrl}}/properties/:propertyId/images",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -4003,7 +4059,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/properties}}/:propertyId/images}}",
+              "raw": "{{baseUrl}}/properties/:propertyId/images",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -4050,7 +4106,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/rooms}}/:roomId/images}}",
+              "raw": "{{baseUrl}}/rooms/:roomId/images",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -4083,7 +4139,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/rooms}}/:roomId/images}}",
+              "raw": "{{baseUrl}}/rooms/:roomId/images",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -4129,7 +4185,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/images}}/upload-limits}}",
+              "raw": "{{baseUrl}}/images/upload-limits",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -4156,7 +4212,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/images}}/:imageId/primary}}",
+              "raw": "{{baseUrl}}/images/:imageId/primary",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -4191,7 +4247,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/images}}/:imageId",
+              "raw": "{{baseUrl}}/images/:imageId",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -4231,7 +4287,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/admin}}/stats}}?days=",
+              "raw": "{{baseUrl}}/admin/stats?days=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -4285,7 +4341,7 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/dashboard}}",
+              "raw": "{{baseUrl}}/dashboard",
               "host": [
                 "{{baseUrl}}"
               ],

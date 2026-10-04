@@ -1,4 +1,4 @@
-import { Response, NextFunction } from "express";
+import { Response, Request, NextFunction } from "express";
 import { AuthenticatedRequest } from "../../middleware/auth";
 import * as bookingService from "./bookings.service";
 import { successResponse, errorResponse } from "../../common/apiResponse";
@@ -125,6 +125,17 @@ export const getBookingPayments = async (req: AuthenticatedRequest, res: Res, ne
     next(err);
   }
 };
+
+export const getCheckoutReturn =
+  (outcome: "success" | "cancel") =>
+  async (req: Request, res: Res, next: NextFunction) => {
+    try {
+      const data = await bookingService.getCheckoutReturnStatus(req.params.id as string, outcome);
+      res.json(successResponse(data));
+    } catch (err) {
+      next(err);
+    }
+  };
 
 export const createCheckout = async (req: AuthenticatedRequest, res: Res, next: NextFunction) => {
   try {

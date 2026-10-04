@@ -78,6 +78,8 @@ const paths = [
   ["get", "/bookings/{id}", operation("Get a booking", "bookings", { pathParams: [{ name: "id", in: "path", required: true, schema: { type: "string" } }], responses: { 200: { description: "OK", content: { "application/json": { schema: { $ref: "#/components/schemas/Booking" } } } } } })],
   ["get", "/bookings/{id}/payments", operation("List a booking's payments", "bookings", { pathParams: [{ name: "id", in: "path", required: true, schema: { type: "string" } }] })],
   ["post", "/bookings/{id}/checkout", operation("Create a checkout session for a booking", "bookings", { pathParams: [{ name: "id", in: "path", required: true, schema: { type: "string" } }] })],
+  ["get", "/bookings/{id}/success", operation("Stripe redirect target after a successful checkout (public)", "bookings", { security: false, pathParams: [{ name: "id", in: "path", required: true, schema: { type: "string" } }] })],
+  ["get", "/bookings/{id}/cancel", operation("Stripe redirect target after a cancelled checkout (public)", "bookings", { security: false, pathParams: [{ name: "id", in: "path", required: true, schema: { type: "string" } }] })],
   ["patch", "/bookings/{id}/approve", operation("Approve a booking (owner/admin)", "bookings", { pathParams: [{ name: "id", in: "path", required: true, schema: { type: "string" } }] })],
   ["patch", "/bookings/{id}/reject", operation("Reject a booking (owner/admin)", "bookings", { pathParams: [{ name: "id", in: "path", required: true, schema: { type: "string" } }] })],
   ["patch", "/bookings/{id}/cancel", operation("Cancel a booking (tenant/owner/admin)", "bookings", { pathParams: [{ name: "id", in: "path", required: true, schema: { type: "string" } }], body: { type: "object", properties: { reason: { type: "string" } } } })],

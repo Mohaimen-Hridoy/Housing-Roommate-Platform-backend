@@ -148,11 +148,13 @@ const OVERRIDES = {
   "GET /bookings/{id}": { auth: TENANT, vars: { id: "bookingId" } },
   "DELETE /bookings/{id}": { auth: OWNER, vars: { id: "bookingId" } },
   "GET /bookings/{id}/payments": { auth: TENANT, vars: { id: "bookingId" } },
-  "POST /bookings/{id}/checkout": {
+"POST /bookings/{id}/checkout": {
     auth: TENANT,
     vars: { id: "bookingId" },
-    note: "Returns a hosted Stripe checkoutUrl. Open it and pay with card 4242 4242 4242 4242 (no expiry or CVC needed); the webhook then flips the payment to SUCCEEDED.",
+    note: "Returns a hosted checkoutUrl. Open it and pay with test card 4242 4242 4242 4242 (no expiry or CVC needed); the webhook then flips the payment to SUCCEEDED.",
   },
+  "GET /bookings/{id}/success": { auth: NO_AUTH, vars: { id: "bookingId" } },
+  "GET /bookings/{id}/cancel": { auth: NO_AUTH, vars: { id: "bookingId" } },
   "PATCH /bookings/{id}/approve": { auth: OWNER, vars: { id: "bookingId" }, body: {} },
   "PATCH /bookings/{id}/reject": { auth: OWNER, vars: { id: "bookingId" }, body: { reason: "Not available for those dates." } },
   "PATCH /bookings/{id}/cancel": { auth: TENANT, vars: { id: "bookingId" }, body: { reason: "Cancelled from the walkthrough." } },
@@ -304,10 +306,10 @@ const buildRequest = (method, rawPath, op) => {
     });
 
   const query = (op.parameters || []).filter((p) => p.in === "query");
-  const path = segments.map((s) => s.replace(/^:/, "{{").replace(/$/, "}}").replace(/^{{(.+)}}$/, ":$1"));
 
   const url = {
-    raw: [BASE_URL, ...path].join("/") + (query.length ? "?" + query.map((q) => `${q.name}=`).join("&") : ""),
+    // segments already carry ":name" for path params, matching the path array
+    raw: [BASE_URL, ...segments].join("/") + (query.length ? "?" + query.map((q) => `${q.name}=`).join("&") : ""),
     host: [BASE_URL],
     path: segments,
   };

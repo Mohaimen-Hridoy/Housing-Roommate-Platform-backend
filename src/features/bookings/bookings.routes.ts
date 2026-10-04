@@ -14,9 +14,15 @@ import {
   deleteBooking,
   getBookingPayments,
   createCheckout,
+  getCheckoutReturn,
 } from "./bookings.controller";
 
 export const bookingsRouter = Router();
+
+// Stripe redirects the payer here after checkout, when the browser holds no
+// bearer token, so these two are registered ahead of the auth middleware.
+bookingsRouter.get("/:id/success", getCheckoutReturn("success"));
+bookingsRouter.get("/:id/cancel", getCheckoutReturn("cancel"));
 
 bookingsRouter.use(authenticate, authorize(Role.OWNER, Role.TENANT, Role.ADMIN));
 
