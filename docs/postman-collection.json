@@ -2312,13 +2312,13 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings/{{id}}/approve",
+              "raw": "{{baseUrl}}/bookings/{{bookingId}}/approve",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "bookings",
-                "{{id}}",
+                "{{bookingId}}",
                 "approve"
               ]
             },
