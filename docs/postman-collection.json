@@ -112,7 +112,7 @@
     },
     {
       "key": "roomId",
-      "value": "",
+      "value": "seed-room-1",
       "type": "string"
     },
     {
@@ -127,12 +127,12 @@
     },
     {
       "key": "bookingStartDate",
-      "value": "",
+      "value": "2026-11-10",
       "type": "string"
     },
     {
       "key": "bookingEndDate",
-      "value": "",
+      "value": "2026-12-10",
       "type": "string"
     },
     {
@@ -2128,7 +2128,7 @@
             "header": [
               {
                 "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
+                "value": "Bearer {{tenantToken}}",
                 "type": "text"
               },
               {
@@ -2242,7 +2242,7 @@
             "header": [
               {
                 "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
+                "value": "Bearer {{tenantToken}}",
                 "type": "text"
               },
               {
@@ -2272,7 +2272,7 @@
             "header": [
               {
                 "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
+                "value": "Bearer {{tenantToken}}",
                 "type": "text"
               },
               {
@@ -2282,13 +2282,13 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/bookings/{{id}}/checkout",
+              "raw": "{{baseUrl}}/bookings/{{bookingId}}/checkout",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "bookings",
-                "{{id}}",
+                "{{bookingId}}",
                 "checkout"
               ]
             }
@@ -2302,7 +2302,7 @@
             "header": [
               {
                 "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
+                "value": "Bearer {{ownerToken}}",
                 "type": "text"
               },
               {
@@ -2450,7 +2450,7 @@
             "header": [
               {
                 "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
+                "value": "Bearer {{adminToken}}",
                 "type": "text"
               },
               {
@@ -2501,7 +2501,7 @@
             "header": [
               {
                 "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
+                "value": "Bearer {{tenantToken}}",
                 "type": "text"
               },
               {
@@ -2530,7 +2530,7 @@
             "header": [
               {
                 "key": "Authorization",
-                "value": "Bearer {{accessToken}}",
+                "value": "Bearer {{adminToken}}",
                 "type": "text"
               },
               {
