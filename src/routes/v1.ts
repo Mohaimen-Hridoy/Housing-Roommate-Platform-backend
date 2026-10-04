@@ -1,4 +1,5 @@
 import { Router } from "express";
+import type { Request, Response } from "express";
 import { authRouter } from "../features/auth/auth.routes";
 import { usersRouter } from "../features/users/users.routes";
 import { propertiesRouter } from "../features/properties/properties.routes";
@@ -16,6 +17,23 @@ import { adminRouter } from "../features/admin/admin.routes";
 import { ownerDashboardRouter } from "../features/admin/owner-dashboard.routes";
 
 export const apiV1Router = Router();
+
+// Landing route so the API base itself resolves instead of 404 when opened.
+apiV1Router.get("/", (_req: Request, res: Response) => {
+  res.json({
+    success: true,
+    name: "Housing & Roommate Platform API",
+    version: "1.0.0",
+    status: "running",
+    documentation: "/api/v1/docs/openapi.json",
+    health: "/api/v1/health",
+    postman: "docs/postman-collection.json (import into Postman)",
+    endpoints: [
+      "auth", "users", "properties", "rooms", "amenities", "bookings", "payments",
+      "reviews", "favorites", "messages", "images", "admin", "dashboard", "audit/logs", "health",
+    ],
+  });
+});
 
 apiV1Router.use("/health", healthRouter);
 apiV1Router.use("/auth", authRouter);
