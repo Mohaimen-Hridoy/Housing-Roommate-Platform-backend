@@ -2,6 +2,7 @@ import { Response, Request, NextFunction } from "express";
 import { AuthenticatedRequest } from "../../middleware/auth";
 import * as bookingService from "./bookings.service";
 import { successResponse, errorResponse } from "../../common/apiResponse";
+import { env } from "../../config";
 import { BookingListItem } from "./bookings.service";
 
 type Res = Response;
@@ -130,6 +131,18 @@ export const getCheckoutReturn =
   (outcome: "success" | "cancel") =>
   async (req: Request, res: Res, next: NextFunction) => {
     try {
+      const acceptsHtml = req.headers.accept?.includes("text/html");
+      const clientBase =
+        process.env.CLIENT_URL ||
+        (env.webAppUrl && !env.webAppUrl.includes("localhost")
+          ? env.webAppUrl
+          : "https://nestspace-online.vercel.app");
+
+      if (acceptsHtml && clientBase) {
+        res.redirect(`${clientBase}/payment/${outcome}?bookingId=${req.params.id}`);
+        return;
+      }
+
       const data = await bookingService.getCheckoutReturnStatus(req.params.id as string, outcome);
       res.json(successResponse(data));
     } catch (err) {

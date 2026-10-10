@@ -378,14 +378,16 @@ export async function createBookingCheckout(id: string, actor: Actor) {
     return { provider: PaymentProvider.MOCK, status: payment.status, clientSecret: null, amount: payment.amount, currency: payment.currency };
   }
 
-  const returnBase = `${env.appUrl}${env.apiBaseUrl}/bookings/${booking.id}`;
+  const clientBase =
+    process.env.CLIENT_URL ||
+    (env.webAppUrl && !env.webAppUrl.includes("localhost") ? env.webAppUrl : "https://nestspace-online.vercel.app");
   const session = await createBookingCheckoutSession({
     amount: payment.amount,
     currency: payment.currency,
     bookingId: booking.id,
     tenantId: booking.tenantId,
-    successUrl: `${returnBase}/success`,
-    cancelUrl: `${returnBase}/cancel`,
+    successUrl: `${clientBase}/payment/success?bookingId=${booking.id}`,
+    cancelUrl: `${clientBase}/payment/cancel?bookingId=${booking.id}`,
   });
   await prisma.payment.update({
     where: { id: payment.id },
