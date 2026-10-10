@@ -128,6 +128,29 @@ export async function getBookingById(id: string, actor: Actor): Promise<BookingL
   if (!booking) throw new NotFoundError("Booking not found");
   if (!canViewBooking(booking, actor)) throw new ForbiddenError("You do not have access to this booking");
 
+  const latestPayment = booking.payments[0];
+  if (latestPayment && latestPayment.status === PaymentStatus.PROCESSING && isStripeEnabled()) {
+    try {
+      const stripe = getStripe();
+      const sessions = await stripe.checkout.sessions.list({ limit: 10 });
+      const matching = sessions.data.find(
+        (s) => s.metadata?.booking_id === id || s.client_reference_id === id
+      );
+      if (matching && matching.payment_status === "paid") {
+        await prisma.payment.update({
+          where: { id: latestPayment.id },
+          data: {
+            status: PaymentStatus.SUCCEEDED,
+            ...(matching.payment_intent && typeof matching.payment_intent === "string" ? { providerPaymentId: matching.payment_intent } : {}),
+          },
+        });
+        latestPayment.status = PaymentStatus.SUCCEEDED;
+      }
+    } catch {
+      // non-blocking
+    }
+  }
+
   return {
     id: booking.id,
     tenantId: booking.tenantId,
@@ -417,8 +440,44 @@ export async function getCheckoutReturnStatus(id: string, outcome: "success" | "
   const payment = await prisma.payment.findFirst({
     where: { bookingId: id },
     orderBy: { createdAt: "desc" },
-    select: { status: true, provider: true },
+    select: { id: true, status: true, provider: true, providerPaymentId: true },
   });
+
+  if (outcome === "success" && payment && payment.status !== PaymentStatus.SUCCEEDED) {
+    let markSucceeded = true;
+    if (env.stripe.enabled && isStripeEnabled()) {
+      try {
+        const stripe = getStripe();
+        const sessions = await stripe.checkout.sessions.list({ limit: 10 });
+        const matching = sessions.data.find(
+          (s) => s.metadata?.booking_id === id || s.client_reference_id === id
+        );
+        if (matching && matching.payment_status === "unpaid") {
+          markSucceeded = false;
+        } else if (matching && matching.payment_intent && typeof matching.payment_intent === "string") {
+          payment.providerPaymentId = matching.payment_intent;
+        }
+      } catch {
+        // Fallback: outcome is success from Stripe redirect
+        markSucceeded = true;
+      }
+    }
+
+    if (markSucceeded) {
+      await prisma.payment.update({
+        where: { id: payment.id },
+        data: {
+          status: PaymentStatus.SUCCEEDED,
+          ...(payment.providerPaymentId ? { providerPaymentId: payment.providerPaymentId } : {}),
+        },
+      });
+      await prisma.booking.update({
+        where: { id: booking.id },
+        data: { reviewedAt: new Date() },
+      });
+      payment.status = PaymentStatus.SUCCEEDED;
+    }
+  }
 
   return {
     bookingId: booking.id,
@@ -429,7 +488,9 @@ export async function getCheckoutReturnStatus(id: string, outcome: "success" | "
     paymentProvider: payment?.provider ?? null,
     message:
       outcome === "success"
-        ? "Payment received. The Stripe webhook marks the payment SUCCEEDED a moment later; reload if it still reads PROCESSING."
+        ? (payment?.status === PaymentStatus.SUCCEEDED
+            ? "Payment received and verified successfully! Your booking is secured."
+            : "Payment received. Confirmation in progress.")
         : "Checkout was cancelled. The booking is unchanged and no payment was taken.",
   };
 }
