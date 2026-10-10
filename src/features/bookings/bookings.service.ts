@@ -379,8 +379,10 @@ export async function createBookingCheckout(id: string, actor: Actor) {
   }
 
   const clientBase =
-    process.env.CLIENT_URL ||
-    (env.webAppUrl && !env.webAppUrl.includes("localhost") ? env.webAppUrl : "https://nestspace-online.vercel.app");
+    (process.env.CLIENT_URL && !process.env.CLIENT_URL.includes("backend") ? process.env.CLIENT_URL : null) ||
+    (env.webAppUrl && !env.webAppUrl.includes("backend") && !env.webAppUrl.includes("localhost")
+      ? env.webAppUrl
+      : "https://nestspace-online.vercel.app");
   const session = await createBookingCheckoutSession({
     amount: payment.amount,
     currency: payment.currency,

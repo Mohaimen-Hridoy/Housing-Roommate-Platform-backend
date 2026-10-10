@@ -42,6 +42,19 @@ export function createApp(): Application {
     res.json(openapiSpec);
   });
 
+  // Payment return redirects directly to frontend
+  app.get(["/payment/success", "/payment/cancel"], (req: Request, res: Response) => {
+    const outcome = req.path.includes("cancel") ? "cancel" : "success";
+    const bookingId = (req.query.bookingId as string) || "";
+    const clientBase =
+      (process.env.CLIENT_URL && !process.env.CLIENT_URL.includes("backend") ? process.env.CLIENT_URL : null) ||
+      (env.webAppUrl && !env.webAppUrl.includes("backend") && !env.webAppUrl.includes("localhost")
+        ? env.webAppUrl
+        : "https://nestspace-online.vercel.app");
+    const query = bookingId ? `?bookingId=${encodeURIComponent(bookingId)}` : "";
+    res.redirect(302, `${clientBase}/payment/${outcome}${query}`);
+  });
+
   // Versioned API routes with rate limiting.
   app.use(`${env.apiBaseUrl}/auth`, authRateLimiter);
   app.use(`${env.apiBaseUrl}`, apiRateLimiter, apiV1Router);

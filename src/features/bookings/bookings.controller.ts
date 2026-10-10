@@ -133,8 +133,8 @@ export const getCheckoutReturn =
     try {
       const acceptsHtml = req.headers.accept?.includes("text/html");
       const clientBase =
-        process.env.CLIENT_URL ||
-        (env.webAppUrl && !env.webAppUrl.includes("localhost")
+        (process.env.CLIENT_URL && !process.env.CLIENT_URL.includes("backend") ? process.env.CLIENT_URL : null) ||
+        (env.webAppUrl && !env.webAppUrl.includes("backend") && !env.webAppUrl.includes("localhost")
           ? env.webAppUrl
           : "https://nestspace-online.vercel.app");
 
